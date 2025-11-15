@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chart 5 – Total speeding fines by year</title>
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="css folder/styles.css">
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"><i class="fa-solid fa-gauge-high"></i></span>
+        <span class="brand-text">Speeding Dashboard</span>
+      </div>
+      <nav class="nav">
+        <ul>
+          <li><a href="index.html"><i class="fa-solid fa-house"></i><span>Home</span></a></li>
+          <li><a href="chart1.html"><i class="fa-solid fa-chart-line"></i><span>Chart 1</span></a></li>
+          <li><a href="chart2.html"><i class="fa-solid fa-chart-column"></i><span>Chart 2</span></a></li>
+          <li><a href="chart3.html"><i class="fa-solid fa-chart-bar"></i><span>Chart 3</span></a></li>
+          <li><a href="chart4.html"><i class="fa-solid fa-circle-notch"></i><span>Chart 4</span></a></li>
+          <li><a class="active" href="chart5.html"><i class="fa-solid fa-braille"></i><span>Chart 5</span></a></li>
+          <li><a href="about_us.html"><i class="fa-solid fa-circle-info"></i><span>About Us</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="section">
+      <div class="container">
+        <h1><i class="fa-solid fa-braille"></i> How do total speeding fines vary by year?</h1>
+        <p>Bar chart showing the total number of speeding fines issued each year from 2008–2024.</p>
+
+        <div id="chart5"
+             style="background:#fff;border:1px solid var(--line);border-radius:14px;
+                    padding:18px;box-shadow:var(--shadow);margin-top:20px;">
+        </div>
+
+        <div id="chart5-legend"
+             style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;justify-content:center;">
+        </div>
+
+        <p style="text-align:center;margin-top:16px;">
+          <strong>Figure 5.</strong> Annual total speeding fines across all jurisdictions.
+        </p>
+
+        <div class="pager" style="margin-top:24px;">
+          <a href="chart4.html"><i class="fa-solid fa-arrow-left"></i> Back: Chart 4</a>
+          <a class="next" href="index.html">Back to Home <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span>@COS30045 Data Visualisation Project</span>
+      <span>by Cheryl and Cindy</span>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="js folder/chart5.js"></script>
+  <script>
+    initChart5("#chart5", "data folder/Chart5.csv");
+  </script>
+</body>
+</html>

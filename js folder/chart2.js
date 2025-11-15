@@ -1,42 +1,45 @@
-// js/chart1.js
+// js/chart2.js
 
-// Match the exact dataset columns
-const CHART1_SERIES = [
-  { key: "Camera issued fines",  name: "Camera issued fines",  color: "#3b82f6" },
-  { key: "Police issued fines",  name: "Police issued fines",  color: "#22c55e" },
-  { key: "Other fines",          name: "Other fines",          color: "#f59e0b" },
-  { key: "Unknown fines",        name: "Unknown fines",        color: "#ef4444" }
+// Jurisdictions from Chart2.csv
+const CHART2_SERIES = [
+  { key: "NSW", name: "NSW", color: "#3b82f6" },
+  { key: "NT",  name: "NT",  color: "#16a34a" },
+  { key: "QLD", name: "QLD", color: "#facc15" },
+  { key: "SA",  name: "SA",  color: "#f97316" },
+  { key: "TAS", name: "TAS", color: "#06b6d4" },
+  { key: "VIC", name: "VIC", color: "#8b5cf6" },
+  { key: "WA",  name: "WA",  color: "#ef4444" },
+  { key: "ACT", name: "ACT", color: "#22c55e" }
 ];
 
-// For tooltip numbers (with commas)
-const chart1Fmt = d3.format(",.0f");
+const chart2Fmt = d3.format(",.0f"); // for tooltip numbers
 
 // Global init function
-function initChart1(containerSelector, csvPath) {
+function initChart2(containerSelector, csvPath) {
   d3.csv(csvPath).then(raw => {
     const years = raw.map(d => +d["Year"]);
 
-    const series = CHART1_SERIES.map(s => ({
+    const series = CHART2_SERIES.map(s => ({
       ...s,
       values: raw.map(d => {
         const rawVal = d[s.key];
         const value =
-          rawVal === undefined || rawVal === null || rawVal === ""
+          rawVal === undefined || rawVal === null || rawVal === "" || rawVal === "NaN"
             ? null
             : +rawVal;
         return { year: +d["Year"], value };
       })
     }));
 
-    drawChart1(containerSelector, years, series);
+    drawChart2(containerSelector, years, series);
 
     window.addEventListener("resize", () =>
-      drawChart1(containerSelector, years, series)
+      drawChart2(containerSelector, years, series)
     );
   });
 }
 
-function drawChart1(containerSelector, years, series) {
+function drawChart2(containerSelector, years, series) {
   const wrap = d3.select(containerSelector);
   wrap.selectAll("*").remove();
 
@@ -62,7 +65,7 @@ function drawChart1(containerSelector, years, series) {
     .domain([0, yMax]).nice()
     .range([height - m.bottom, m.top]);
 
-  // ---------- X AXIS ----------
+  // ----- X axis -----
   const xAxis = svg.append("g")
     .attr("transform", `translate(0,${height - m.bottom})`)
     .call(
@@ -72,17 +75,17 @@ function drawChart1(containerSelector, years, series) {
         .tickSizeOuter(0)
     );
 
-  // Move year labels (e.g. 2008) further right from the Y-axis and 0 label
+  // nudge year labels right so 2008 is not stuck to Y axis
   xAxis.selectAll("text")
-    .attr("dx", "1.4em"); // tweak this value if you want more/less spacing
+    .attr("dx", "1.4em");
 
   xAxis.selectAll(".tick line")
     .attr("stroke", "#e5e7eb");
 
-  // ---------- Y AXIS ----------
+  // ----- Y axis (scientific notation like KNIME) -----
   const yAxis = d3.axisLeft(y)
     .ticks(6)
-    .tickFormat(d3.format(".2e")) // 0.00e+0, 1.00e+6, ...
+    .tickFormat(d3.format(".2e"))
     .tickSize(-(width - m.left - m.right))
     .tickSizeOuter(0);
 
@@ -92,10 +95,9 @@ function drawChart1(containerSelector, years, series) {
     .selectAll(".tick line")
     .attr("stroke", "#e5e7eb");
 
-  // Darker axis line like your KNIME screenshot
   svg.selectAll(".domain").attr("stroke", "#6b7280");
 
-  // ---------- Y LABEL (vertical "Total Fines") ----------
+  // Axis labels
   svg.append("text")
     .attr("transform", "rotate(-90)")
     .attr("x", -(m.top + (height - m.top - m.bottom) / 2))
@@ -105,7 +107,6 @@ function drawChart1(containerSelector, years, series) {
     .attr("fill", "#6b7280")
     .text("Total Fines");
 
-  // ---------- X LABEL ("Year") ----------
   svg.append("text")
     .attr("x", width / 2)
     .attr("y", height - 10)
@@ -114,7 +115,7 @@ function drawChart1(containerSelector, years, series) {
     .attr("fill", "#6b7280")
     .text("Year");
 
-  // ---------- LINE GENERATOR ----------
+  // Line generator
   const line = d3.line()
     .defined(d => d.value != null)
     .x(d => x(d.year))
@@ -122,19 +123,17 @@ function drawChart1(containerSelector, years, series) {
 
   const g = svg.append("g");
 
-  // ---------- DRAW SERIES ----------
+  // Draw all jurisdictions
   series.forEach(s => {
     const valid = s.values.filter(v => v.value != null);
 
-    // line
     g.append("path")
       .datum(valid)
       .attr("fill", "none")
       .attr("stroke", s.color)
-      .attr("stroke-width", 2.4)
+      .attr("stroke-width", 2.2)
       .attr("d", line);
 
-    // dots
     g.selectAll(null)
       .data(valid)
       .enter()
@@ -145,8 +144,8 @@ function drawChart1(containerSelector, years, series) {
       .attr("cy", d => y(d.value));
   });
 
-  // ---------- LEGEND ----------
-  const legend = d3.select("#chart1-legend");
+  // ----- Legend -----
+  const legend = d3.select("#chart2-legend");
   legend.selectAll("*").remove();
 
   series.forEach(s => {
@@ -170,7 +169,7 @@ function drawChart1(containerSelector, years, series) {
     btn.append("span").text(s.name);
   });
 
-  // ---------- TOOLTIP + VERTICAL LINE ----------
+  // ----- Tooltip + vertical guideline -----
   const yearIndex = {};
   years.forEach((yr, i) => { yearIndex[yr] = i; });
 
@@ -204,7 +203,6 @@ function drawChart1(containerSelector, years, series) {
       const [mx] = d3.pointer(event, this);
       const xYear = x.invert(mx);
 
-      // nearest year
       let closest = years[0];
       let minDiff = Math.abs(xYear - years[0]);
       for (let i = 1; i < years.length; i++) {
@@ -224,7 +222,7 @@ function drawChart1(containerSelector, years, series) {
       let html = `<strong>${closest}</strong><br>`;
       series.forEach(s => {
         const v = s.values[idx]?.value ?? null;
-        const val = v == null ? "—" : chart1Fmt(v);
+        const val = v == null ? "—" : chart2Fmt(v);
         html += `
           <div style="display:flex;gap:6px;">
             <span style="width:10px;height:10px;border-radius:50%;background:${s.color}"></span>
@@ -236,7 +234,7 @@ function drawChart1(containerSelector, years, series) {
       tooltip.html(html).style("opacity", 1);
 
       const wrapBox = wrap.node().getBoundingClientRect();
-      const tWidth = 220;
+      const tWidth = 260;
       const tX = Math.min(
         wrapBox.width - tWidth - 10,
         Math.max(10, mx + m.left - wrapBox.left + 12)
