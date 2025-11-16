@@ -39,25 +39,31 @@
     <section class="section">
       <div class="container">
         <h1><i class="fa-solid fa-chart-bar"></i> Chart 3: Which jurisdiction records the highest/lowest fine rates per 10,000 driver licences?</h1>
-        <p>Horizontal bar chart showing speeding fines per 10,000 driver licences by jurisdiction in 2024.</p>
+        <p>Horizontal bar chart showing speeding fines per 10,000 driver licences by jurisdiction, filtered by year.</p>
+
+        <div class="chart-header-row"
+            style="display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-top:8px;">
+          <label for="chart3-year-select"
+                style="font-size:0.9rem;color:var(--muted);">
+            Select year
+          </label>
+          <select id="chart3-year-select"
+                  style="padding:6px 10px;border-radius:4px;border:1px solid #d1d5db;background:#fff;">
+          </select>
+        </div>
 
         <div id="chart3"
-             style="background:#fff;border:1px solid var(--line);border-radius:14px;
-                    padding:18px;box-shadow:var(--shadow);margin-top:20px;">
+            style="background:#fff;border:1px solid var(--line);border-radius:14px;
+                    padding:18px;box-shadow:var(--shadow);margin-top:12px;">
         </div>
 
         <div id="chart3-legend"
-             style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+            style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
         </div>
 
         <p style="text-align:center;margin-top:16px;">
-          <strong>Figure 3.</strong> Fines per 10,000 driver licences by jurisdiction (2024). Higher values indicate more fines per licensed driver.
+          <strong>Figure 3.</strong> Fines per 10,000 driver licences by jurisdiction in <span id="chart3-caption-year">2024</span>.
         </p>
-
-        <div class="pager" style="margin-top:24px;">
-          <a href="chart2.html"><i class="fa-solid fa-arrow-left"></i> Back: Chart 2</a>
-          <a class="next" href="chart4.html">Next: Chart 4 <i class="fa-solid fa-arrow-right"></i></a>
-        </div>
       </div>
     </section>
   </main>
@@ -72,6 +78,7 @@
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
   <script src="js folder/chart3.js"></script>
   <script>
+
     initChart3("#chart3", "data folder/Chart3.csv");
   </script>
 </body>

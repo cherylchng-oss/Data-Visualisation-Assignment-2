@@ -3,7 +3,7 @@
 // Keep colours consistent with Chart 2
 const CHART3_COLORS = {
   NSW: "#3b82f6", // blue
-  NT:  "#16a34a", // green-ish in your legend, but you used blue in screenshot earlier; adjust if needed
+  NT:  "#16a34a", // green-ish
   QLD:"#facc15",  // yellow
   SA:  "#f97316", // orange
   TAS:"#06b6d4",  // teal
@@ -17,22 +17,68 @@ const chart3Fmt = d3.format(",.2f"); // for bar-end labels
 // Global init
 function initChart3(containerSelector, csvPath) {
   d3.csv(csvPath).then(raw => {
-    // Use 2024 only
-    const data2024 = raw
-      .filter(d => +d["Year"] === 2024)
+    // --- Prepare full dataset ---
+    const allData = raw
       .map(d => ({
+        year: +d["Year"],
         jurisdiction: d["Jurisdiction"],
         value: +d["Fines Per 10000 Driver License"]
       }))
-      .filter(d => !isNaN(d.value));
+      .filter(d => !isNaN(d.year) && !isNaN(d.value));
 
-    // Sort descending by value (highest at top)
-    data2024.sort((a, b) => d3.descending(a.value, b.value));
+    // Unique years (sorted ascending)
+    const years = Array.from(new Set(allData.map(d => d.year))).sort(d3.ascending);
 
-    drawChart3(containerSelector, data2024);
+    // Default year: prefer 2024, otherwise latest year in data
+    const defaultYear = years.includes(2024) ? 2024 : d3.max(years);
 
+    // ----- Build / populate year dropdown -----
+    const yearSelect = d3.select("#chart3-year-select");
+    yearSelect.selectAll("*").remove();
+
+    yearSelect
+      .selectAll("option")
+      .data(years)
+      .enter()
+      .append("option")
+      .attr("value", d => d)
+      .property("selected", d => d === defaultYear)
+      .text(d => d);
+
+    // Helper: get data for a single year + sort descending
+    function getDataForYear(y) {
+      const yearData = allData
+        .filter(d => d.year === y)
+        .map(d => ({
+          jurisdiction: d.jurisdiction,
+          value: d.value
+        }));
+
+      yearData.sort((a, b) => d3.descending(a.value, b.value));
+      return yearData;
+    }
+
+    let currentYear = defaultYear;
+    let currentData = getDataForYear(currentYear);
+
+    // Update caption year text if element exists
+    d3.select("#chart3-caption-year").text(currentYear);
+
+    // Initial draw (with animation)
+    drawChart3(containerSelector, currentData);
+
+    // When user changes year
+    yearSelect.on("change", function () {
+      currentYear = +this.value;
+      currentData = getDataForYear(currentYear);
+
+      drawChart3(containerSelector, currentData); // redraw with transition
+      d3.select("#chart3-caption-year").text(currentYear);
+    });
+
+    // Redraw on resize with currently selected year data
     window.addEventListener("resize", () =>
-      drawChart3(containerSelector, data2024)
+      drawChart3(containerSelector, currentData)
     );
   });
 }
@@ -107,7 +153,7 @@ function drawChart3(containerSelector, data) {
     .attr("fill", "#6b7280")
     .text("Jurisdiction");
 
-  // ----- Bars -----
+  // ----- Bars (with transition) -----
   const barGroup = svg.append("g");
   const barHeight = y.bandwidth() * 0.7;
 
@@ -117,24 +163,38 @@ function drawChart3(containerSelector, data) {
     .append("rect")
     .attr("x", x(0))
     .attr("y", d => y(d.jurisdiction) + (y.bandwidth() - barHeight) / 2)
-    .attr("width", d => x(d.value) - x(0))
+    .attr("width", 0)                   // start from 0 for animation
     .attr("height", barHeight)
     .attr("fill", d => CHART3_COLORS[d.jurisdiction] || "#3b82f6")
     .attr("rx", 6)
     .attr("ry", 6);
 
-  // Value labels at end of each bar (rounded)
-  barGroup.selectAll("text.value-label")
+  // Animate bar width to final value
+  bars.transition()
+    .duration(650)
+    .ease(d3.easeCubicOut)
+    .attr("width", d => x(d.value) - x(0));
+
+  // ----- Value labels (also animated) -----
+  const labels = barGroup.selectAll("text.value-label")
     .data(data)
     .enter()
     .append("text")
     .attr("class", "value-label")
-    .attr("x", d => x(d.value) + 6)
+    .attr("x", x(0) + 6) // start near 0
     .attr("y", d => y(d.jurisdiction) + y.bandwidth() / 2)
     .attr("dominant-baseline", "middle")
     .attr("font-size", 11)
     .attr("fill", "#4b5563")
+    .style("opacity", 0)
     .text(d => chart3Fmt(d.value));
+
+  labels.transition()
+    .duration(650)
+    .delay(150)
+    .ease(d3.easeCubicOut)
+    .attr("x", d => x(d.value) + 6)
+    .style("opacity", 1);
 
   // ----- Legend -----
   const legend = d3.select("#chart3-legend");
@@ -162,7 +222,7 @@ function drawChart3(containerSelector, data) {
     btn.append("span").text(j);
   });
 
-  // ----- Tooltip like your screenshot -----
+  // ----- Tooltip -----
   const tooltip = wrap.append("div")
     .style("position", "absolute")
     .style("pointer-events", "none")
@@ -199,7 +259,6 @@ function drawChart3(containerSelector, data) {
         .html(html)
         .style("opacity", 1);
 
-      // Position near the mouse (like KNIME balloon)
       const pageX = event.pageX;
       const pageY = event.pageY;
 

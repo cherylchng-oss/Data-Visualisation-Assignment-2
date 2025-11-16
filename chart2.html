@@ -39,11 +39,24 @@
     <section class="section">
       <div class="container">
         <h1><i class="fa-solid fa-chart-column"></i> Chart 2: How have speeding fines changed in each jurisdiction over the years?</h1>
-        <p>Line plot showing annual speeding fines by state and territory from 2008–2024.</p>
+        <p>Line plot showing annual speeding fines by state and territory from 2008–2024. Use the filter below to focus on a single jurisdiction.</p>
+
+        <!-- NEW: jurisdiction filter row -->
+        <div class="chart-header-row"
+             style="display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-top:8px;">
+          <label for="chart2-jurisdiction-select"
+                 style="font-size:0.9rem;color:var(--muted);">
+            Select jurisdiction
+          </label>
+          <select id="chart2-jurisdiction-select"
+                  style="padding:6px 10px;border-radius:4px;border:1px solid #d1d5db;background:#fff;">
+            <!-- Options are populated by chart2.js -->
+          </select>
+        </div>
 
         <div id="chart2"
              style="background:#fff;border:1px solid var(--line);border-radius:14px;
-                    padding:18px;box-shadow:var(--shadow);margin-top:20px;">
+                    padding:18px;box-shadow:var(--shadow);margin-top:12px;">
         </div>
 
         <div id="chart2-legend"
@@ -53,11 +66,6 @@
         <p style="text-align:center;margin-top:16px;">
           <strong>Figure 2.</strong> Annual speeding fines by jurisdiction. Totals represent notices recorded by each state and territory.
         </p>
-
-        <div class="pager" style="margin-top:24px;">
-          <a href="chart1.html"><i class="fa-solid fa-arrow-left"></i> Back: Chart 1</a>
-          <a class="next" href="chart3.html">Next: Chart 3 <i class="fa-solid fa-arrow-right"></i></a>
-        </div>
       </div>
     </section>
   </main>

@@ -19,7 +19,7 @@ function initChart2(containerSelector, csvPath) {
   d3.csv(csvPath).then(raw => {
     const years = raw.map(d => +d["Year"]);
 
-    const series = CHART2_SERIES.map(s => ({
+    const allSeries = CHART2_SERIES.map(s => ({
       ...s,
       values: raw.map(d => {
         const rawVal = d[s.key];
@@ -31,17 +31,45 @@ function initChart2(containerSelector, csvPath) {
       })
     }));
 
-    drawChart2(containerSelector, years, series);
+    const wrap = d3.select(containerSelector);
 
-    window.addEventListener("resize", () =>
-      drawChart2(containerSelector, years, series)
-    );
+    // ----- Build jurisdiction dropdown -----
+    const select = d3.select("#chart2-jurisdiction-select");
+    select.selectAll("*").remove();
+
+    select.append("option")
+      .attr("value", "ALL")
+      .text("All");
+
+    CHART2_SERIES.forEach(s => {
+      select.append("option")
+        .attr("value", s.key)
+        .text(s.name);
+    });
+
+    let selectedKey = "ALL"; // ALL = show every jurisdiction
+
+    function render() {
+      drawChart2(wrap, years, allSeries, selectedKey);
+    }
+
+    // initial draw
+    render();
+
+    // update on dropdown change
+    select.on("change", function () {
+      selectedKey = this.value;
+      render();
+    });
+
+    // redraw on resize
+    window.addEventListener("resize", render);
   });
 }
 
-function drawChart2(containerSelector, years, series) {
-  const wrap = d3.select(containerSelector);
+function drawChart2(wrap, years, allSeries, selectedKey) {
   wrap.selectAll("*").remove();
+  wrap.style("position", "relative");
 
   const width  = Math.max(720, wrap.node().clientWidth || 720);
   const height = 460;
@@ -56,6 +84,12 @@ function drawChart2(containerSelector, years, series) {
     .domain(d3.extent(years))
     .range([m.left, width - m.right]);
 
+  // Which series to actually draw?
+  const series = selectedKey === "ALL"
+    ? allSeries
+    : allSeries.filter(s => s.key === selectedKey);
+
+  // y-domain based on *visible* series (helps when focusing on one line)
   const yMax = d3.max(
     series,
     s => d3.max(s.values, v => (v.value != null ? v.value : 0))
@@ -75,16 +109,12 @@ function drawChart2(containerSelector, years, series) {
         .tickSizeOuter(0)
     );
 
-  // nudge year labels right so 2008 is not stuck to Y axis
-  xAxis.selectAll("text")
-    .attr("dx", "1.4em");
+  xAxis.selectAll("text").attr("dx", "1.4em");
+  xAxis.selectAll(".tick line").attr("stroke", "#e5e7eb");
 
-  xAxis.selectAll(".tick line")
-    .attr("stroke", "#e5e7eb");
-
-  // ----- Y axis (scientific notation like KNIME) -----
+  // ----- Y axis -----
   const yAxis = d3.axisLeft(y)
-    .ticks(6)
+    .ticks(10)
     .tickFormat(d3.format(".2e"))
     .tickSize(-(width - m.left - m.right))
     .tickSizeOuter(0);
@@ -123,7 +153,7 @@ function drawChart2(containerSelector, years, series) {
 
   const g = svg.append("g");
 
-  // Draw all jurisdictions
+  // Draw lines + points for visible jurisdictions
   series.forEach(s => {
     const valid = s.values.filter(v => v.value != null);
 
@@ -144,11 +174,11 @@ function drawChart2(containerSelector, years, series) {
       .attr("cy", d => y(d.value));
   });
 
-  // ----- Legend -----
+  // ----- Legend (static, no filter) -----
   const legend = d3.select("#chart2-legend");
   legend.selectAll("*").remove();
 
-  series.forEach(s => {
+  allSeries.forEach(s => {
     const btn = legend.append("button")
       .attr("type", "button")
       .style("display", "inline-flex")
@@ -158,12 +188,13 @@ function drawChart2(containerSelector, years, series) {
       .style("border", "1px solid var(--line)")
       .style("border-radius", "999px")
       .style("background", "#fff")
-      .style("font-weight", "700");
+      .style("font-weight", "700")
+      .style("cursor", "default"); // no clicking
 
     btn.append("span")
       .style("width", "12px")
       .style("height", "12px")
-      .style("border-radius", "3px")
+      .style("border-radius", "50%")
       .style("background", s.color);
 
     btn.append("span").text(s.name);
@@ -203,6 +234,7 @@ function drawChart2(containerSelector, years, series) {
       const [mx] = d3.pointer(event, this);
       const xYear = x.invert(mx);
 
+      // nearest year
       let closest = years[0];
       let minDiff = Math.abs(xYear - years[0]);
       for (let i = 1; i < years.length; i++) {
@@ -233,13 +265,24 @@ function drawChart2(containerSelector, years, series) {
 
       tooltip.html(html).style("opacity", 1);
 
-      const wrapBox = wrap.node().getBoundingClientRect();
-      const tWidth = 260;
-      const tX = Math.min(
-        wrapBox.width - tWidth - 10,
-        Math.max(10, mx + m.left - wrapBox.left + 12)
-      );
-      const tY = 140;
+      // dynamic tooltip position near mouse, but kept inside card
+      const [wx, wy] = d3.pointer(event, wrap.node());
+      const wrapWidth  = wrap.node().clientWidth;
+      const wrapHeight = wrap.node().clientHeight;
+      const tWidth  = 260;
+      const tHeight = 170; // approx
+
+      let tX = wx + 16;
+      if (tX + tWidth > wrapWidth - 10) {
+        tX = wx - tWidth - 16;
+      }
+      tX = Math.max(10, Math.min(wrapWidth - tWidth - 10, tX));
+
+      let tY = wy - tHeight - 12;
+      if (tY < 10) {
+        tY = wy + 16;
+      }
+      tY = Math.max(10, Math.min(wrapHeight - tHeight - 10, tY));
 
       tooltip
         .style("width", `${tWidth}px`)

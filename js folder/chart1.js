@@ -39,6 +39,7 @@ function initChart1(containerSelector, csvPath) {
 function drawChart1(containerSelector, years, series) {
   const wrap = d3.select(containerSelector);
   wrap.selectAll("*").remove();
+  wrap.style("position", "relative"); // for tooltip positioning
 
   const width  = Math.max(720, wrap.node().clientWidth || 720);
   const height = 460;
@@ -74,7 +75,7 @@ function drawChart1(containerSelector, years, series) {
 
   // Move year labels (e.g. 2008) further right from the Y-axis and 0 label
   xAxis.selectAll("text")
-    .attr("dx", "1.4em"); // tweak this value if you want more/less spacing
+    .attr("dx", "1.4em");
 
   xAxis.selectAll(".tick line")
     .attr("stroke", "#e5e7eb");
@@ -95,7 +96,7 @@ function drawChart1(containerSelector, years, series) {
   // Darker axis line like your KNIME screenshot
   svg.selectAll(".domain").attr("stroke", "#6b7280");
 
-  // ---------- Y LABEL (vertical "Total Fines") ----------
+  // ---------- Y LABEL ----------
   svg.append("text")
     .attr("transform", "rotate(-90)")
     .attr("x", -(m.top + (height - m.top - m.bottom) / 2))
@@ -105,7 +106,7 @@ function drawChart1(containerSelector, years, series) {
     .attr("fill", "#6b7280")
     .text("Total Fines");
 
-  // ---------- X LABEL ("Year") ----------
+  // ---------- X LABEL ----------
   svg.append("text")
     .attr("x", width / 2)
     .attr("y", height - 10)
@@ -170,7 +171,7 @@ function drawChart1(containerSelector, years, series) {
     btn.append("span").text(s.name);
   });
 
-  // ---------- TOOLTIP + VERTICAL LINE ----------
+  // ---------- TOOLTIP + VERTICAL LINE (dynamic) ----------
   const yearIndex = {};
   years.forEach((yr, i) => { yearIndex[yr] = i; });
 
@@ -235,13 +236,26 @@ function drawChart1(containerSelector, years, series) {
 
       tooltip.html(html).style("opacity", 1);
 
-      const wrapBox = wrap.node().getBoundingClientRect();
-      const tWidth = 220;
-      const tX = Math.min(
-        wrapBox.width - tWidth - 10,
-        Math.max(10, mx + m.left - wrapBox.left + 12)
-      );
-      const tY = 140;
+      // dynamic tooltip position near mouse, but kept inside chart card
+      const [wx, wy] = d3.pointer(event, wrap.node());
+      const wrapWidth  = wrap.node().clientWidth;
+      const wrapHeight = wrap.node().clientHeight;
+      const tWidth  = 220;
+      const tHeight = 160; // approximate height
+
+      // try to put tooltip to the right of the mouse; if no space, put left
+      let tX = wx + 16;
+      if (tX + tWidth > wrapWidth - 10) {
+        tX = wx - tWidth - 16;
+      }
+      tX = Math.max(10, Math.min(wrapWidth - tWidth - 10, tX));
+
+      // try to put tooltip above the mouse; if no space, put below
+      let tY = wy - tHeight - 12;
+      if (tY < 10) {
+        tY = wy + 16;
+      }
+      tY = Math.max(10, Math.min(wrapHeight - tHeight - 10, tY));
 
       tooltip
         .style("width", `${tWidth}px`)

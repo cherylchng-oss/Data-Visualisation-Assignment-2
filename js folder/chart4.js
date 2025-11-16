@@ -29,9 +29,11 @@ function initChart4(containerSelector, csvPath) {
 
       if (method === "Camera issued fines") {
         agg["Camera issued fines"] += v;
-      } else if (method === "Police issued fines") {
+      } 
+      else if (method === "Police issued fines") {
         agg["Police issued fines"] += v;
-      } else if (method === "Other fines" || method === "Unknown fines") {
+      } 
+      else if (method === "Other fines" || method === "Unknown fines") {
         agg["Other fines"] += v;
       }
     });
@@ -63,11 +65,12 @@ function drawChart4(containerSelector, data) {
 
   const total = d3.sum(data, d => d.value) || 1;
 
-  const svg = wrap.append("svg")
+  const svgRoot = wrap.append("svg")
     .attr("viewBox", [0, 0, width, height])
     .attr("width", "100%")
-    .attr("height", height)
-    .append("g")
+    .attr("height", height);
+
+  const svg = svgRoot.append("g")
     .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
   const pie = d3.pie()
@@ -76,7 +79,7 @@ function drawChart4(containerSelector, data) {
 
   const arcs = pie(data);
 
-  const arc = d3.arc()
+  const arcNormal = d3.arc()
     .innerRadius(0)
     .outerRadius(radius);
 
@@ -84,16 +87,60 @@ function drawChart4(containerSelector, data) {
     .innerRadius(radius * 1.05)
     .outerRadius(radius * 1.05);
 
-  // ---------- SLICES ----------
-  svg.selectAll("path.slice")
+  // ---------- TOOLTIP ----------
+  const tooltip = wrap.append("div")
+    .style("position", "absolute")
+    .style("pointer-events", "none")
+    .style("background", "#ffffff")
+    .style("border", "1px solid #e5e7eb")
+    .style("border-radius", "8px")
+    .style("box-shadow", "0 10px 30px rgba(0,0,0,0.18)")
+    .style("padding", "8px 10px")
+    .style("font-size", "12px")
+    .style("opacity", 0);
+
+  // ---------- SLICES (NO POP-OUT) ----------
+  const slices = svg.selectAll("path.slice")
     .data(arcs)
     .enter()
     .append("path")
     .attr("class", "slice")
-    .attr("d", arc)
+    .attr("d", arcNormal)
     .attr("fill", d => d.data.color)
-    .attr("stroke", "#ffffff")
-    .attr("stroke-width", 1.5);
+    .style("cursor", "pointer")
+    .style("transition", "opacity 0.15s");
+
+  slices
+    .on("pointerenter", function (event, d) {
+      const pct = chart4PctFmt((d.data.value / total) * 100);
+      const html = `
+        <div style="font-weight:600;margin-bottom:4px;">
+          ${d.data.name}
+        </div>
+        <div>Fines: ${d.data.value.toLocaleString()}</div>
+        <div>Share: ${pct}%</div>
+      `;
+      tooltip.html(html).style("opacity", 1);
+
+      // dim all other slices
+      slices
+        .filter(s => s !== d)
+        .style("opacity", 0.45);
+
+      // keep hovered slice bright
+      d3.select(this).style("opacity", 1);
+    })
+    .on("pointermove", function (event) {
+      tooltip
+        .style("left", `${event.pageX + 16}px`)
+        .style("top", `${event.pageY - 20}px`);
+    })
+    .on("pointerleave", function () {
+      tooltip.style("opacity", 0);
+
+      // restore all slices
+      slices.style("opacity", 1);
+    });
 
   // ---------- LEADER LINES ----------
   svg.selectAll("polyline")
@@ -107,29 +154,27 @@ function drawChart4(containerSelector, data) {
       const pos = outerArc.centroid(d);
       const midAngle = (d.startAngle + d.endAngle) / 2;
       const x = radius * 1.15 * (midAngle < Math.PI ? 1 : -1);
-      return [arc.centroid(d), outerArc.centroid(d), [x, pos[1]]];
+      return [arcNormal.centroid(d), outerArc.centroid(d), [x, pos[1]]];
     });
 
-  // ---------- LABELS (staggered so they don't overlap) ----------
-  const sideCounts = { left: 0, right: 0 }; // keeps track per side
+  // ---------- LABELS ----------
+  const sideCounts = { left: 0, right: 0 };
 
   svg.selectAll("text.label")
     .data(arcs)
     .enter()
     .append("text")
     .attr("class", "label")
-    .attr("dy", "0.35em")
     .attr("font-size", 11)
     .attr("fill", "#374151")
+    .attr("dy", "0.35em")
     .attr("transform", d => {
       const pos = outerArc.centroid(d);
       const midAngle = (d.startAngle + d.endAngle) / 2;
       const side = midAngle < Math.PI ? "right" : "left";
 
-      // increment counter for that side and offset vertically
       sideCounts[side] += 1;
-      const offsetIndex = sideCounts[side] - 1;   // 0,1,2...
-      const extraY = offsetIndex * 14;           // 14px spacing between labels
+      const extraY = (sideCounts[side] - 1) * 14;
 
       const x = radius * 1.18 * (side === "right" ? 1 : -1);
       const y = pos[1] + extraY;
@@ -137,45 +182,12 @@ function drawChart4(containerSelector, data) {
       return `translate(${x},${y})`;
     })
     .style("text-anchor", d => {
-      const midAngle = (d.startAngle + d.endAngle) / 2;
-      return midAngle < Math.PI ? "start" : "end";
+      const mid = (d.startAngle + d.endAngle) / 2;
+      return mid < Math.PI ? "start" : "end";
     })
     .text(d => {
       const pct = chart4PctFmt((d.data.value / total) * 100);
       return `${d.data.name} (${pct}%)`;
-    });
-
-  // ---------- TOOLTIP ----------
-  const tooltip = wrap.append("div")
-    .style("position", "absolute")
-    .style("pointer-events", "none")
-    .style("background", "#ffffff")
-    .style("border", "1px solid #e5e7eb")
-    .style("border-radius", "8px")
-    .style("box-shadow", "0 10px 30px rgba(0,0,0,0.18)")
-    .style("padding", "8px 10px")
-    .style("font-size", "12px")
-    .style("line-height", "1.4")
-    .style("opacity", 0);
-
-  wrap.select("svg").selectAll("path.slice")
-    .on("mousemove", function (event, d) {
-      const pct = chart4PctFmt((d.data.value / total) * 100);
-      const html = `
-        <div style="font-weight:600;margin-bottom:4px;">
-          ${d.data.name}
-        </div>
-        <div>Fines: ${d.data.value.toLocaleString()}</div>
-        <div>Share: ${pct}%</div>
-      `;
-      tooltip.html(html).style("opacity", 1);
-
-      tooltip
-        .style("left", `${event.pageX + 16}px`)
-        .style("top", `${event.pageY - 20}px`);
-    })
-    .on("mouseleave", () => {
-      tooltip.style("opacity", 0);
     });
 
   // ---------- LEGEND ----------
@@ -183,11 +195,10 @@ function drawChart4(containerSelector, data) {
   legend.selectAll("*").remove();
 
   ["Camera issued fines", "Police issued fines", "Other fines"].forEach(key => {
-    const seriesItem = CHART4_SERIES.find(s => s.key === key);
-    if (!seriesItem) return;
+    const s = CHART4_SERIES.find(v => v.key === key);
+    if (!s) return;
 
     const btn = legend.append("button")
-      .attr("type", "button")
       .style("display", "inline-flex")
       .style("align-items", "center")
       .style("gap", "8px")
@@ -201,8 +212,8 @@ function drawChart4(containerSelector, data) {
       .style("width", "12px")
       .style("height", "12px")
       .style("border-radius", "3px")
-      .style("background", seriesItem.color);
+      .style("background", s.color);
 
-    btn.append("span").text(seriesItem.name);
+    btn.append("span").text(s.name);
   });
 }
