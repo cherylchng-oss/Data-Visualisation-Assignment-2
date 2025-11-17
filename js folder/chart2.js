@@ -79,9 +79,14 @@ function drawChart2(wrap, years, allSeries, selectedKey) {
     .attr("viewBox", [0, 0, width, height])
     .attr("width", "100%")
     .attr("height", height);
+  
+  const xMin = d3.min(years);
+  const xMax = d3.max(years);
+
+  const allYears = d3.range(xMin, xMax + 1);
 
   const x = d3.scaleLinear()
-    .domain(d3.extent(years))
+    .domain([xMin - 1, xMax])
     .range([m.left, width - m.right]);
 
   // Which series to actually draw?
@@ -104,13 +109,17 @@ function drawChart2(wrap, years, allSeries, selectedKey) {
     .attr("transform", `translate(0,${height - m.bottom})`)
     .call(
       d3.axisBottom(x)
+        .tickValues(allYears)
         .tickFormat(d3.format("d"))
-        .tickSize(-(height - m.top - m.bottom))
+        .tickSize(0)
         .tickSizeOuter(0)
     );
 
-  xAxis.selectAll("text").attr("dx", "1.4em");
-  xAxis.selectAll(".tick line").attr("stroke", "#e5e7eb");
+  xAxis.selectAll("text")
+    .attr("text-anchor", "middle");
+
+  xAxis.selectAll(".tick line")
+    .attr("stroke", "#e5e7eb");
 
   // ----- Y axis -----
   const yAxis = d3.axisLeft(y)
@@ -173,6 +182,28 @@ function drawChart2(wrap, years, allSeries, selectedKey) {
       .attr("cx", d => x(d.year))
       .attr("cy", d => y(d.value));
   });
+
+  // ---------- ANIMATIONS ----------
+  // Animate line drawing when filter changes
+  g.selectAll("path")
+    .each(function () {
+      const totalLength = this.getTotalLength();
+      d3.select(this)
+        .attr("stroke-dasharray", totalLength + " " + totalLength)
+        .attr("stroke-dashoffset", totalLength)
+        .transition()
+        .duration(700)
+        .ease(d3.easeCubicOut)
+        .attr("stroke-dashoffset", 0);
+    });
+
+  // Fade in points slightly after the lines
+  g.selectAll("circle")
+    .attr("opacity", 0)
+    .transition()
+    .duration(500)
+    .delay(300)
+    .attr("opacity", 1);
 
   // ----- Legend (static, no filter) -----
   const legend = d3.select("#chart2-legend");

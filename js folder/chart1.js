@@ -50,17 +50,26 @@ function drawChart1(containerSelector, years, series) {
     .attr("width", "100%")
     .attr("height", height);
 
+  const xMin = d3.min(years);
+  const xMax = d3.max(years);
+
+  // all years for tick labels (e.g. 2008...2024)
+  const allYears = d3.range(xMin, xMax + 1);
+
+  // add padding before first year
   const x = d3.scaleLinear()
-    .domain(d3.extent(years))
+    .domain([xMin - 1, xMax])
     .range([m.left, width - m.right]);
 
+  // (kept yMax calc though we now force domain max)
   const yMax = d3.max(
     series,
     s => d3.max(s.values, v => (v.value != null ? v.value : 0))
   ) || 1;
 
+  // Fixed Y axis 0 → 5,000,000
   const y = d3.scaleLinear()
-    .domain([0, yMax]).nice()
+    .domain([0, 5_000_000]).nice()
     .range([height - m.bottom, m.top]);
 
   // ---------- X AXIS ----------
@@ -68,14 +77,15 @@ function drawChart1(containerSelector, years, series) {
     .attr("transform", `translate(0,${height - m.bottom})`)
     .call(
       d3.axisBottom(x)
+        .tickValues(allYears)        // show every year
         .tickFormat(d3.format("d"))
-        .tickSize(-(height - m.top - m.bottom))
+        .tickSize(0)
         .tickSizeOuter(0)
     );
 
-  // Move year labels (e.g. 2008) further right from the Y-axis and 0 label
+  // Move year labels (e.g. 2008) further right from the Y-axis
   xAxis.selectAll("text")
-    .attr("dx", "1.4em");
+    .attr("text-anchor", "middle");
 
   xAxis.selectAll(".tick line")
     .attr("stroke", "#e5e7eb");

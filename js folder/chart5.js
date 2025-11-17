@@ -85,7 +85,7 @@ function drawChart5(containerSelector, data) {
     .attr("transform", `translate(0,${height - m.bottom})`)
     .call(
       d3.axisBottom(x)
-        .tickSize(-(height - m.top - m.bottom))
+        .tickSize(0)
         .tickFormat("")
     )
     .selectAll("line")
