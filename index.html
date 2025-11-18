@@ -4,12 +4,15 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Speeding Dashboard – Home</title>
+
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <!-- Icons -->
+
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
   <link rel="stylesheet" href="css folder/styles.css" />
 </head>
+
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -17,9 +20,10 @@
   <header class="site-header">
     <div class="container header-inner">
       <div class="brand">
-        <span class="brand-mark" aria-hidden="true"><i class="fa-solid fa-gauge-high"></i></span>
+        <span class="brand-mark"><i class="fa-solid fa-gauge-high"></i></span>
         <span class="brand-text">Speeding Dashboard</span>
       </div>
+
       <nav class="nav">
         <ul>
           <li><a class="active" href="index.html"><i class="fa-solid fa-house"></i><span>Home</span></a></li>
@@ -27,7 +31,7 @@
           <li><a href="chart2.html"><i class="fa-solid fa-chart-column"></i><span>Chart 2</span></a></li>
           <li><a href="chart3.html"><i class="fa-solid fa-chart-pie"></i><span>Chart 3</span></a></li>
           <li><a href="chart4.html"><i class="fa-solid fa-chart-simple"></i><span>Chart 4</span></a></li>
-          <li><a href="chart5.html"><i class="fa-solid fa-braille"></i><span>Chart5</span></a></li>
+          <li><a href="chart5.html"><i class="fa-solid fa-braille"></i><span>Chart 5</span></a></li>
           <li><a href="about_us.html"><i class="fa-solid fa-circle-info"></i><span>About Us</span></a></li>
         </ul>
       </nav>
@@ -35,74 +39,79 @@
   </header>
 
   <main id="main">
+
     <!-- Hero -->
     <section class="hero">
       <div class="container hero-inner">
         <div class="hero-copy">
           <h1><i class="fa-solid fa-gauge"></i> Speeding — Road Safety Enforcement (Australia)</h1>
           <p>
-            Explore speeding infringements across jurisdictions and years. This project
-            turns complex enforcement data into simple, interactive visuals so anyone can
-            understand trends, compare regions, and spot patterns that matter.
+            Explore speeding infringements across jurisdictions and years. This dashboard
+            transforms complex enforcement data into clean, interactive visuals for
+            understanding trends, comparing regions, and identifying patterns that matter.
           </p>
+
           <div class="cta-row">
             <a class="btn btn-teal" href="chart1.html"><i class="fa-solid fa-play"></i> Start Exploring</a>
             <a class="btn btn-ghost" href="about_us.html"><i class="fa-solid fa-user-group"></i> About Us</a>
           </div>
         </div>
+
         <div class="hero-card">
           <div class="badge-wrap">
             <span class="badge teal"><i class="fa-solid fa-camera"></i> Camera vs Police</span>
             <span class="badge amber"><i class="fa-solid fa-calendar-days"></i> 2008–2024</span>
-            <span class="badge magenta"><i class="fa-solid fa-map-location-dot"></i> By Jurisdiction</span>
+            <span class="badge magenta"><i class="fa-solid fa-map-location-dot"></i> Jurisdictions</span>
           </div>
+
           <h3>What you’ll find</h3>
           <ul>
-            <li><i class="fa-solid fa-arrow-trend-up"></i> Yearly speeding fine trends</li>
-            <li><i class="fa-solid fa-scale-balanced"></i> Fair comparisons (per 10k licences)</li>
-            <li><i class="fa-solid fa-layer-group"></i> Method breakdowns</li>
-            <li><i class="fa-regular fa-lightbulb"></i> Simple takeaways</li>
+            <li><i class="fa-solid fa-arrow-trend-up"></i> Yearly speeding trends</li>
+            <li><i class="fa-solid fa-scale-balanced"></i> Fair-rate comparisons</li>
+            <li><i class="fa-solid fa-layer-group"></i> Detection method breakdowns</li>
+            <li><i class="fa-regular fa-lightbulb"></i> Easy insights</li>
           </ul>
         </div>
       </div>
     </section>
 
-    <!-- Background -->
+    <!-- Background section -->
     <section class="section">
       <div class="container grid-2">
+
         <div>
           <h2><i class="fa-solid fa-book-open"></i> Background</h2>
           <p>
-            Speeding is a major contributor to road trauma. Australian jurisdictions
-            record speeding enforcement outcomes (e.g., camera-issued and police-issued fines),
-            alongside contextual information by year and region. Since 2008, the national data
-            coverage has improved, enabling clearer comparisons and more reliable insights
-            into how enforcement changes over time.
+            Speeding is one of the most common contributors to road trauma. Australian states
+            collect infringement data annually, including camera-issued fines, police-issued fines,
+            and other detection categories. Since 2008, improvements in data collection allow more
+            meaningful trend and jurisdiction comparisons.
           </p>
-          <p class="note">
-            Some years include data collection changes (technology upgrades, policy shifts, reporting adjustments).
-          </p>
+
+          <p class="note">Some years show data variability due to policy changes or reporting adjustments.</p>
         </div>
+
         <aside class="info-card">
           <h3><i class="fa-solid fa-database"></i> Data scope</h3>
           <ul>
             <li>Jurisdictions (NSW, VIC, QLD, etc.)</li>
-            <li>Time span: 2008–2024 (where available)</li>
-            <li>Measures: counts & rates (per 10,000 licences)</li>
+            <li>Time span: 2008–2024</li>
+            <li>Measures: counts & rates per 10,000 licences</li>
             <li>Detection: camera vs police vs unknown</li>
           </ul>
         </aside>
+
       </div>
     </section>
 
-    <!-- Aim -->
+    <!-- Aim section (prettified card) -->
     <section class="section alt">
-      <div class="container narrow">
+      <div class="container narrow aim-card">
         <h2><i class="fa-solid fa-bullseye"></i> Aim</h2>
         <p>
-          Provide a clear, friendly dashboard that helps students, policymakers, and the public
-          understand speeding enforcement patterns across Australia—and use those insights to ask
-          better questions about safety and policy.
+          Provide an intuitive public dashboard that helps students, policymakers, and the
+          community understand speeding enforcement patterns across Australia — and use those
+          insights to ask better questions about road safety.
         </p>
       </div>
     </section>
@@ -111,46 +120,43 @@
     <section class="section">
       <div class="container">
         <h2><i class="fa-solid fa-list-check"></i> Objectives</h2>
+
         <div class="cards">
 
-          <!-- Chart 1 -->
           <article class="card accent-navy">
             <h3><i class="fa-solid fa-chart-line"></i> Fine trends over time</h3>
-            <p>See how total speeding fines have changed from 2008–2024.</p>
+            <p>Explore how speeding fines change from 2008–2024.</p>
             <a href="chart1.html" class="chip">Go to Chart 1</a>
           </article>
 
-          <!-- Chart 2 -->
           <article class="card accent-teal">
             <h3><i class="fa-solid fa-map"></i> Compare jurisdictions</h3>
-            <p>View how each state or territory’s speeding fines rise or fall over the years.</p>
+            <p>View each state/territory’s fine trends.</p>
             <a href="chart2.html" class="chip">Go to Chart 2</a>
           </article>
 
-          <!-- Chart 3 -->
           <article class="card accent-amber">
             <h3><i class="fa-solid fa-scale-balanced"></i> Fair-rate comparisons</h3>
-            <p>Identify which jurisdictions have the highest or lowest fines per 10,000 licences.</p>
+            <p>Identify highest & lowest fines per 10,000 licences.</p>
             <a href="chart3.html" class="chip">Go to Chart 3</a>
           </article>
 
-          <!-- Chart 4 -->
           <article class="card accent-magenta">
-            <h3><i class="fa-solid fa-camera"></i> Detection method breakdown</h3>
-            <p>See the share of camera-issued, police-issued, and unknown speeding fines.</p>
+            <h3><i class="fa-solid fa-camera"></i> Detection breakdown</h3>
+            <p>Camera vs police vs unknown fine proportions.</p>
             <a href="chart4.html" class="chip">Go to Chart 4</a>
           </article>
 
-          <!-- Chart 5 -->
           <article class="card accent-mix">
             <h3><i class="fa-solid fa-star"></i> Highest infringement year</h3>
-            <p>Discover which year recorded the most speeding infringements overall.</p>
+            <p>Find the peak year of speeding fines.</p>
             <a href="chart5.html" class="chip">Go to Chart 5</a>
           </article>
 
         </div>
       </div>
     </section>
+
   </main>
 
   <!-- Footer -->
@@ -160,5 +166,6 @@
       <span>by Cheryl and Cindy</span>
     </div>
   </footer>
+
 </body>
 </html>

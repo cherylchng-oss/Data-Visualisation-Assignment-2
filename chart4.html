@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Chart 4 – Fines by detection method (pie)</title>
+  <title>Chart 4 & 5 – Fines by detection method & year</title>
 
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -38,6 +38,7 @@
   <main id="main">
     <section class="section">
       <div class="container">
+        <!-- ===== CHART 4 ===== -->
         <h1><i class="fa-solid fa-circle-notch"></i> Chart 4: What percentage of speeding fines come from camera detection, police-issued notices, or unknown categories?</h1>
         <p>Pie chart showing the proportion of speeding fines issued by cameras, police, and other detection methods.</p>
 
@@ -54,6 +55,25 @@
         <p style="text-align:center;margin-top:16px;">
           <strong>Figure 4.</strong> Distribution of speeding fines by detection method.
         </p>
+
+        <!-- ===== CHART 5 BELOW CHART 4 ===== -->
+        <h2 style="margin-top:40px;">
+          <i class="fa-solid fa-braille"></i> Chart 5: Which year recorded the highest number of speeding infringements overall?
+        </h2>
+        <p>Bar chart showing the total number of speeding fines issued each year from 2008–2024.</p>
+
+        <div id="chart5"
+             style="background:#fff;border:1px solid var(--line);border-radius:14px;
+                    padding:18px;box-shadow:var(--shadow);margin-top:20px;">
+        </div>
+
+        <div id="chart5-legend"
+             style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;justify-content:center;">
+        </div>
+
+        <p style="text-align:center;margin-top:16px;">
+          <strong>Figure 5.</strong> Annual total speeding fines across all jurisdictions.
+        </p>
       </div>
     </section>
   </main>
@@ -65,10 +85,13 @@
     </div>
   </footer>
 
+  <!-- D3 + BOTH CHART SCRIPTS -->
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
   <script src="js folder/chart4.js"></script>
+  <script src="js folder/chart5.js"></script>
   <script>
     initChart4("#chart4", "data folder/Chart4.csv");
+    initChart5("#chart5", "data folder/Chart5.csv");
   </script>
 </body>
 </html>
