@@ -154,16 +154,7 @@ function drawChart5(containerSelector, data) {
 
   // ---- Tooltip ----
   const tooltip = wrap.append("div")
-    .style("position", "absolute")
-    .style("pointer-events", "none")
-    .style("background", "#ffffff")
-    .style("border", "1px solid #e5e7eb")
-    .style("border-radius", "8px")
-    .style("box-shadow", "0 10px 30px rgba(0,0,0,0.18)")
-    .style("padding", "8px 10px")
-    .style("font-size", "12px")
-    .style("line-height", "1.4")
-    .style("opacity", 0);
+    .attr("class", "chart-tooltip");
 
   svg.selectAll("rect")
     .on("mousemove", function (event, d) {
@@ -190,20 +181,10 @@ function drawChart5(containerSelector, data) {
   data.forEach(d => {
     const btn = legend.append("button")
       .attr("type", "button")
-      .style("display", "inline-flex")
-      .style("align-items", "center")
-      .style("gap", "8px")
-      .style("padding", "4px 8px")
-      .style("border", "1px solid var(--line)")
-      .style("border-radius", "999px")
-      .style("background", "#fff")
-      .style("font-size", "11px")
-      .style("font-weight", "600");
+      .attr("class", "chart-legend-pill chart-legend-pill--sm");
 
     btn.append("span")
-      .style("width", "12px")
-      .style("height", "12px")
-      .style("border-radius", "3px")
+      .attr("class", "chart-legend-swatch")
       .style("background", CHART5_COLORS[d.year] || "#3b82f6");
 
     btn.append("span").text(d.year);

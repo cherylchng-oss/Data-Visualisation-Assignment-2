@@ -92,15 +92,7 @@ function drawChart4(containerSelector, data) {
 
   // ---------- TOOLTIP ----------
   const tooltip = wrap.append("div")
-    .style("position", "absolute")
-    .style("pointer-events", "none")
-    .style("background", "#ffffff")
-    .style("border", "1px solid #e5e7eb")
-    .style("border-radius", "8px")
-    .style("box-shadow", "0 10px 30px rgba(0,0,0,0.18)")
-    .style("padding", "8px 10px")
-    .style("font-size", "12px")
-    .style("opacity", 0);
+    .attr("class", "chart-tooltip");
 
   // ---------- PIE SLICES ----------
   const slices = svg.selectAll("path.slice")
@@ -207,19 +199,11 @@ function drawChart4(containerSelector, data) {
     if (!s) return;
 
     const btn = legend.append("button")
-      .style("display", "inline-flex")
-      .style("align-items", "center")
-      .style("gap", "8px")
-      .style("padding", "6px 10px")
-      .style("border", "1px solid var(--line)")
-      .style("border-radius", "999px")
-      .style("background", "#fff")
-      .style("font-weight", "700");
+      .attr("type", "button")
+      .attr("class", "chart-legend-pill");
 
     btn.append("span")
-      .style("width", "12px")
-      .style("height", "12px")
-      .style("border-radius", "3px")
+      .attr("class", "chart-legend-swatch")
       .style("background", s.color);
 
     btn.append("span").text(s.name);

@@ -1,1 +1,58 @@
-/* to be added soon */
+/* ==== Generic chart layout helpers ==== */
+
+.chart-hitbox {
+  fill: transparent;
+  cursor: crosshair;
+}
+
+/* Tooltip used in all charts */
+.chart-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+  padding: 8px 10px;
+  font-size: 12px;
+  line-height: 1.4;
+  opacity: 0; /* JS will change this */
+}
+
+/* Slightly larger padding for Chart 1 & 2 tooltips */
+.chart-tooltip--lg {
+  padding: 10px;
+}
+
+/* ==== Legend pill buttons ==== */
+
+.chart-legend-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  font-weight: 700;
+}
+
+/* Smaller pill for many-year legend in Chart 5 */
+.chart-legend-pill--sm {
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Legend colour box */
+.chart-legend-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+/* Circular swatch (e.g. chart2) */
+.chart-legend-swatch--round {
+  border-radius: 50%;
+}
