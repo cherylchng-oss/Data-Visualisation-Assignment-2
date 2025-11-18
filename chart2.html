@@ -4,11 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Chart 2 – Speeding fines by jurisdiction</title>
-
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
   <link rel="stylesheet" href="css folder/styles.css">
 </head>
 
@@ -25,9 +23,9 @@
         <ul>
           <li><a href="index.html"><i class="fa-solid fa-house"></i><span>Home</span></a></li>
           <li><a href="chart1.html"><i class="fa-solid fa-chart-line"></i><span>Chart 1</span></a></li>
-          <li><a class="active" href="chart2.html"><i class="fa-solid fa-chart-column"></i><span>Chart 2</span></a></li>
-          <li><a href="chart3.html"><i class="fa-solid fa-chart-pie"></i><span>Chart 3</span></a></li>
-          <li><a href="chart4.html"><i class="fa-solid fa-chart-simple"></i><span>Chart 4</span></a></li>
+          <li><a class="active" href="chart2.html"><i class="fa-solid fa-chart-line"></i><span>Chart 2</span></a></li>
+          <li><a href="chart3.html"><i class="fa-solid fa-chart-bar"></i><span>Chart 3</span></a></li>
+          <li><a href="chart4.html"><i class="fa-solid fa-chart-pie"></i><span>Chart 4</span></a></li>
           <li><a href="chart6.html"><i class="fa-solid fa-braille"></i><span>Chart 5</span></a></li>
           <li><a href="about_us.html"><i class="fa-solid fa-circle-info"></i><span>About Us</span></a></li>
         </ul>
@@ -38,10 +36,9 @@
   <main id="main">
     <section class="section">
       <div class="container">
-        <h1><i class="fa-solid fa-chart-column"></i> Chart 2: How have speeding fines changed in each jurisdiction over the years?</h1>
+        <h1>How have speeding fines changed in each jurisdiction over the years?</h1>
         <p>Line plot showing annual speeding fines by state and territory from 2008–2024. Use the filter below to focus on a single jurisdiction.</p>
 
-        <!-- NEW: jurisdiction filter row -->
         <div class="chart-header-row"
              style="display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-top:8px;">
           <label for="chart2-jurisdiction-select"
@@ -50,7 +47,6 @@
           </label>
           <select id="chart2-jurisdiction-select"
                   style="padding:6px 10px;border-radius:4px;border:1px solid #d1d5db;background:#fff;">
-            <!-- Options are populated by chart2.js -->
           </select>
         </div>
 

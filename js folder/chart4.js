@@ -29,23 +29,20 @@ function initChart4(containerSelector, csvPath) {
 
       if (method === "Camera issued fines") {
         agg["Camera issued fines"] += v;
-      } 
-      else if (method === "Police issued fines") {
+      } else if (method === "Police issued fines") {
         agg["Police issued fines"] += v;
-      } 
-      else if (method === "Other fines" || method === "Unknown fines") {
+      } else if (method === "Other fines" || method === "Unknown fines") {
         agg["Other fines"] += v;
       }
     });
 
-    const data = Object.entries(agg)
-      .filter(([_, value]) => value > 0)
-      .map(([method, value]) => ({
-        method,
-        value,
-        color: seriesMap[method]?.color || "#3b82f6",
-        name: seriesMap[method]?.name || method
-      }));
+    // keep all three categories so labels always show
+    const data = Object.entries(agg).map(([method, value]) => ({
+      method,
+      value,
+      color: seriesMap[method]?.color || "#3b82f6",
+      name: seriesMap[method]?.name || method
+    }));
 
     drawChart4(containerSelector, data);
 
@@ -61,7 +58,7 @@ function drawChart4(containerSelector, data) {
 
   const width  = Math.max(540, wrap.node().clientWidth || 540);
   const height = 360;
-  const radius = Math.min(width, height) / 2 - 10;
+  const radius = Math.min(width, height) / 2 - 40; // extra padding
 
   const total = d3.sum(data, d => d.value) || 1;
 
@@ -70,8 +67,9 @@ function drawChart4(containerSelector, data) {
     .attr("width", "100%")
     .attr("height", height);
 
+  // nudge everything down a bit so top labels don’t clip
   const svg = svgRoot.append("g")
-    .attr("transform", `translate(${width / 2}, ${height / 2})`);
+    .attr("transform", `translate(${width / 2}, ${height / 2 + 10})`);
 
   const pie = d3.pie()
     .sort(null)
@@ -83,9 +81,14 @@ function drawChart4(containerSelector, data) {
     .innerRadius(0)
     .outerRadius(radius);
 
+  // base positions slightly outside the pie
   const outerArc = d3.arc()
     .innerRadius(radius * 1.05)
     .outerRadius(radius * 1.05);
+
+  function midAngle(d) {
+    return d.startAngle + (d.endAngle - d.startAngle) / 2;
+  }
 
   // ---------- TOOLTIP ----------
   const tooltip = wrap.append("div")
@@ -99,7 +102,7 @@ function drawChart4(containerSelector, data) {
     .style("font-size", "12px")
     .style("opacity", 0);
 
-  // ---------- SLICES (NO POP-OUT) ----------
+  // ---------- PIE SLICES ----------
   const slices = svg.selectAll("path.slice")
     .data(arcs)
     .enter()
@@ -107,28 +110,22 @@ function drawChart4(containerSelector, data) {
     .attr("class", "slice")
     .attr("d", arcNormal)
     .attr("fill", d => d.data.color)
-    .style("cursor", "pointer")
-    .style("transition", "opacity 0.15s");
+    .style("cursor", "pointer");
 
   slices
     .on("pointerenter", function (event, d) {
       const pct = chart4PctFmt((d.data.value / total) * 100);
-      const html = `
-        <div style="font-weight:600;margin-bottom:4px;">
-          ${d.data.name}
-        </div>
-        <div>Fines: ${d.data.value.toLocaleString()}</div>
-        <div>Share: ${pct}%</div>
-      `;
-      tooltip.html(html).style("opacity", 1);
+      tooltip
+        .html(`
+          <div style="font-weight:600;margin-bottom:4px;">
+            ${d.data.name}
+          </div>
+          <div>Fines: ${d.data.value.toLocaleString()}</div>
+          <div>Share: ${pct}%</div>
+        `)
+        .style("opacity", 1);
 
-      // dim all other slices
-      slices
-        .filter(s => s !== d)
-        .style("opacity", 0.45);
-
-      // keep hovered slice bright
-      d3.select(this).style("opacity", 1);
+      slices.style("opacity", s => (s === d ? 1 : 0.45));
     })
     .on("pointermove", function (event) {
       tooltip
@@ -137,58 +134,69 @@ function drawChart4(containerSelector, data) {
     })
     .on("pointerleave", function () {
       tooltip.style("opacity", 0);
-
-      // restore all slices
       slices.style("opacity", 1);
     });
 
-  // ---------- LEADER LINES ----------
+  // ---------- BUILD LABEL LAYOUT (group by side, stack vertically) ----------
+  const layout = [];
+
+  arcs.forEach(d => {
+    const [_, baseY] = outerArc.centroid(d);
+    const angle = midAngle(d);
+    const side = angle < Math.PI ? "right" : "left";
+    layout.push({ arc: d, side, baseY });
+  });
+
+  const right = layout
+    .filter(l => l.side === "right")
+    .sort((a, b) => a.baseY - b.baseY);
+
+  const left = layout
+    .filter(l => l.side === "left")
+    .sort((a, b) => a.baseY - b.baseY);
+
+  const labelOffsetY = 16;
+  const labelRadiusFactor = 1.25;
+
+  right.forEach((item, i) => {
+    item.labelX = radius * labelRadiusFactor;
+    item.labelY = item.baseY + (i - (right.length - 1) / 2) * labelOffsetY;
+  });
+
+  left.forEach((item, i) => {
+    item.labelX = -radius * labelRadiusFactor;
+    item.labelY = item.baseY + (i - (left.length - 1) / 2) * labelOffsetY;
+  });
+
+  const allLayout = right.concat(left);
+
+  // ---------- LEADER LINES (slice -> just outside -> label) ----------
   svg.selectAll("polyline")
-    .data(arcs)
+    .data(allLayout)
     .enter()
     .append("polyline")
     .attr("fill", "none")
     .attr("stroke", "#9ca3af")
     .attr("stroke-width", 1)
-    .attr("points", d => {
-      const pos = outerArc.centroid(d);
-      const midAngle = (d.startAngle + d.endAngle) / 2;
-      const x = radius * 1.15 * (midAngle < Math.PI ? 1 : -1);
-      return [arcNormal.centroid(d), outerArc.centroid(d), [x, pos[1]]];
+    .attr("points", l => {
+      const p1 = arcNormal.centroid(l.arc);
+      const p2 = outerArc.centroid(l.arc);
+      const p3 = [l.labelX, l.labelY];
+      return [p1, p2, p3];
     });
 
-  // ---------- LABELS ----------
-  const sideCounts = { left: 0, right: 0 };
-
+  // ---------- LABELS (neat, not overlapping) ----------
   svg.selectAll("text.label")
-    .data(arcs)
+    .data(allLayout)
     .enter()
     .append("text")
     .attr("class", "label")
-    .attr("font-size", 11)
+    .attr("font-size", 12)
     .attr("fill", "#374151")
     .attr("dy", "0.35em")
-    .attr("transform", d => {
-      const pos = outerArc.centroid(d);
-      const midAngle = (d.startAngle + d.endAngle) / 2;
-      const side = midAngle < Math.PI ? "right" : "left";
-
-      sideCounts[side] += 1;
-      const extraY = (sideCounts[side] - 1) * 14;
-
-      const x = radius * 1.18 * (side === "right" ? 1 : -1);
-      const y = pos[1] + extraY;
-
-      return `translate(${x},${y})`;
-    })
-    .style("text-anchor", d => {
-      const mid = (d.startAngle + d.endAngle) / 2;
-      return mid < Math.PI ? "start" : "end";
-    })
-    .text(d => {
-      const pct = chart4PctFmt((d.data.value / total) * 100);
-      return `${d.data.name} (${pct}%)`;
-    });
+    .attr("transform", l => `translate(${l.labelX},${l.labelY})`)
+    .style("text-anchor", l => (l.side === "right" ? "start" : "end"))
+    .text(l => l.arc.data.name); // only the name; % is in tooltip
 
   // ---------- LEGEND ----------
   const legend = d3.select("#chart4-legend");
