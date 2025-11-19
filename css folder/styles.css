@@ -698,3 +698,33 @@ body {
     padding-inline: 10px;
   }
 }
+
+/* Container */
+#chart6-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Year slider layout */
+.chart6-year-control {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+#chart6-year-slider {
+  width: 100%;
+}
+
+#chart6-year-label {
+  margin-top: 6px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+/* SVG size (responsive) */
+#chart6-svg {
+  width: 100%;
+  height: 480px;
+}

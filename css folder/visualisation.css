@@ -56,3 +56,29 @@
 .chart-legend-swatch--round {
   border-radius: 50%;
 }
+
+/* Tooltip */
+.chart6-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: #0f172a;
+  color: #f9fafb;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.4);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 9999;
+}
+
+/* Legend */
+.chart6-legend {
+  font-size: 0.8rem;
+}
+
+.chart6-legend rect {
+  stroke: #0f172a;
+  stroke-width: 0.5;
+}
+
