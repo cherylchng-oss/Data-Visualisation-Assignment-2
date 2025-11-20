@@ -4,9 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Chart 6 – Map of speeding fines by jurisdiction</title>
+
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
   <link rel="stylesheet" href="css folder/styles.css">
   <link rel="stylesheet" href="css folder/visualisation.css">
 </head>
@@ -27,7 +29,7 @@
           <li><a href="chart2.html"><i class="fa-solid fa-chart-line"></i><span>Chart 2</span></a></li>
           <li><a href="chart3.html"><i class="fa-solid fa-chart-bar"></i><span>Chart 3</span></a></li>
           <li><a href="chart4.html"><i class="fa-solid fa-chart-pie"></i><span>Chart 4</span></a></li>
-          <li><a class="active" href="chart6.html"><i class="fa-solid fa-braille"></i><span>Chart 5</span></a></li>
+          <li><a class="active" href="chart6.html"><i class="fa-solid fa-braille"></i><span>Chart 6</span></a></li>
           <li><a href="about_us.html"><i class="fa-solid fa-circle-info"></i><span>About Us</span></a></li>
         </ul>
       </nav>
@@ -37,7 +39,6 @@
   <main id="main">
     <section class="section">
       <div class="container">
-        <!-- ===== CHART 6 – AUSTRALIA MAP ===== -->
         <h1>How do speeding fines and enforcement methods vary by jurisdiction across Australia?</h1>
         <p>
           Interactive choropleth map of Australia showing the primary enforcement method and related data
@@ -47,13 +48,26 @@
         <div id="chart6-container"
              style="background:#fff;border:1px solid var(--line);border-radius:14px;
                     padding:18px;box-shadow:var(--shadow);margin-top:20px;">
-          <!-- Year slider -->
-          <div class="chart6-year-control">
-            <input id="chart6-year-slider" type="range">
-            <div id="chart6-year-label">2008</div>
+
+          <!-- YEAR CONTROL: buttons left/right of slider -->
+          <div class="chart6-year-wrapper">
+
+            <button id="chart6-year-minus" class="circle-btn" type="button">
+              <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+            </button>
+
+            <div class="chart6-slider-area">
+              <input id="chart6-year-slider" type="range">
+              <div id="chart6-year-label">2008</div>
+            </div>
+
+            <button id="chart6-year-plus" class="circle-btn" type="button">
+              <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </button>
+
           </div>
 
-          <!-- Map SVG -->
+          <!-- MAP SVG -->
           <svg id="chart6-svg"></svg>
         </div>
 
