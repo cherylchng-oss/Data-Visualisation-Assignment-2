@@ -154,7 +154,7 @@ function drawChart5(containerSelector, data) {
 
   // ---- Tooltip ----
   const tooltip = wrap.append("div")
-    .attr("class", "chart-tooltip");
+    .attr("class", "chart-tooltip chart-tooltip--compact");
 
   svg.selectAll("rect")
     .on("mousemove", function (event, d) {
@@ -181,10 +181,10 @@ function drawChart5(containerSelector, data) {
   data.forEach(d => {
     const btn = legend.append("button")
       .attr("type", "button")
-      .attr("class", "chart-legend-pill chart-legend-pill--sm");
+      .attr("class", "chart-legend-pill-small");
 
     btn.append("span")
-      .attr("class", "chart-legend-swatch")
+      .attr("class", "chart-legend-pill-small-swatch")
       .style("background", CHART5_COLORS[d.year] || "#3b82f6");
 
     btn.append("span").text(d.year);

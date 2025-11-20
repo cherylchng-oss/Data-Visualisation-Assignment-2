@@ -1,146 +1,105 @@
-/* === Year control: buttons on left/right of slider === */
-.chart6-year-wrapper {
-  display: flex;
+/* =========================================
+   LEGEND STYLES FOR CHARTS 1–4
+   (copied from JS .style(...) values)
+========================================= */
+
+.chart-legend-pill {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
-  width: 100%;
-  margin-bottom: 18px;
-  position: relative;
-}
-
-.chart6-slider-area {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 1;
-  position: relative;
-}
-
-.chart6-slider-area input[type="range"] {
-  width: 100%;
-  accent-color: #3b82f6;
-  height: 6px;
-}
-
-#chart6-year-label {
-  margin-top: 6px;
-  background: rgba(15, 23, 42, 0.9);
-  padding: 4px 10px;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--line, #e5e7eb);
   border-radius: 999px;
-  color: #f8fafc;
-  font-weight: 600;
-  border: 1px solid rgba(148, 163, 184, 0.6);
-  font-size: 0.85rem;
+  background: #ffffff;
+  font-weight: 700;
 }
 
-/* Circle arrow buttons */
-.circle-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: none;
-  display: flex;
+.chart-legend-pill-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+/* Chart 2 legend had cursor: default in JS */
+.chart-legend-pill--no-click {
+  cursor: default;
+}
+
+/* =========================================
+   LEGEND STYLES FOR CHART 5
+   (copied from chart5.js)
+========================================= */
+
+.chart-legend-pill-small {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #4f8dfd, #1d4ed8);
-  color: white;
-  cursor: pointer;
-  box-shadow: 0 0 18px rgba(64, 123, 255, 0.35);
-  transition: 0.15s ease;
-  font-size: 18px;
+  gap: 8px;
+  padding: 4px 8px;
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 999px;
+  background: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
 }
 
-.circle-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(64, 123, 255, 0.45);
+.chart-legend-pill-small-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
 }
 
-.circle-btn:active {
-  transform: translateY(1px) scale(0.95);
+/* =========================================
+   TOOLTIP BASE STYLES (CHARTS 1–5)
+========================================= */
+
+.chart-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+  font-size: 12px;
+  line-height: 1.4;
+  opacity: 0; /* JS will toggle this */
+}
+
+/* chart1 & chart2 used padding: 10px */
+.chart-tooltip--default {
+  padding: 10px;
+}
+
+/* chart3 used padding: 10px 12px */
+.chart-tooltip--wide {
+  padding: 10px 12px;
+}
+
+/* chart4 & chart5 used padding: 8px 10px */
+.chart-tooltip--compact {
+  padding: 8px 10px;
 }
 
 /* Tooltip */
 .chart6-tooltip {
   position: absolute;
   pointer-events: none;
-  background: rgba(5, 10, 25, 0.95);
-  color: #f8fafc;
-  padding: 14px 16px;
-  border-radius: 14px;
-  border: 1px solid rgba(148, 163, 184, 0.5);
-  box-shadow: 0 18px 35px rgba(15, 23, 42, 0.65);
-  font-size: 0.9rem;
-  max-width: 260px;
+  background: #0f172a;
+  color: #f9fafb;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.4);
   opacity: 0;
+  transition: opacity 0.15s ease;
   z-index: 9999;
 }
 
-.chart6-tooltip-title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
+/* Legend */
+.chart6-legend {
+  font-size: 0.8rem;
 }
 
-.chart6-tooltip-title strong {
-  color: #ffffff;
-  font-size: 1rem;
-}
-
-.chart6-tooltip-title .dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
-.chart6-tooltip-title .year-pill {
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  font-size: 0.75rem;
-  color: #ffffff;
-}
-
-.chart6-tooltip-body > div {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 4px;
-}
-
-.chart6-tooltip-body .label {
-  color: #cbd5e1;
-  font-weight: 500;
-}
-
-.chart6-tooltip-body span:last-child {
-  color: #ffffff;
-  font-weight: 600;
-}
-
-.chart6-tooltip-body .badge {
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(59,130,246,0.30);
-  border: 1px solid rgba(59,130,246,0.45);
-  font-size: 0.75rem;
-  color: #e0f2fe;
-}
-
-/* Map hover */
-.chart6-map path {
-  transition: all 0.25s ease;
-}
-
-.chart6-map path.is-hovered {
-  stroke-width: 2px;
-  filter: drop-shadow(0 0 10px rgba(15,23,42,0.5));
-}
-
-/* Legend title */
-.chart6-legend .legend-title {
-  fill: #ffffff;
-  font-size: 12px;
-  font-weight: 600;
+.chart6-legend rect {
+  stroke: #0f172a;
+  stroke-width: 0.5;
 }

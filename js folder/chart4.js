@@ -92,7 +92,7 @@ function drawChart4(containerSelector, data) {
 
   // ---------- TOOLTIP ----------
   const tooltip = wrap.append("div")
-    .attr("class", "chart-tooltip");
+    .attr("class", "chart-tooltip chart-tooltip--compact");
 
   // ---------- PIE SLICES ----------
   const slices = svg.selectAll("path.slice")
@@ -199,11 +199,10 @@ function drawChart4(containerSelector, data) {
     if (!s) return;
 
     const btn = legend.append("button")
-      .attr("type", "button")
       .attr("class", "chart-legend-pill");
 
     btn.append("span")
-      .attr("class", "chart-legend-swatch")
+      .attr("class", "chart-legend-pill-swatch")
       .style("background", s.color);
 
     btn.append("span").text(s.name);

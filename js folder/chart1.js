@@ -166,7 +166,7 @@ function drawChart1(containerSelector, years, series) {
       .attr("class", "chart-legend-pill");
 
     btn.append("span")
-      .attr("class", "chart-legend-swatch")
+      .attr("class", "chart-legend-pill-swatch")
       .style("background", s.color);
 
     btn.append("span").text(s.name);
@@ -177,7 +177,7 @@ function drawChart1(containerSelector, years, series) {
   years.forEach((yr, i) => { yearIndex[yr] = i; });
 
   const tooltip = wrap.append("div")
-    .attr("class", "chart-tooltip chart-tooltip--lg")
+    .attr("class", "chart-tooltip chart-tooltip--default");;
 
   const vLine = svg.append("line")
     .attr("stroke", "#9ca3af")
@@ -191,7 +191,8 @@ function drawChart1(containerSelector, years, series) {
     .attr("y", m.top)
     .attr("width", width - m.left - m.right)
     .attr("height", height - m.top - m.bottom)
-    .attr("class", "chart-hitbox")
+    .attr("fill", "transparent")
+    .style("cursor", "crosshair")
     .on("mousemove", function (event) {
       const [mx] = d3.pointer(event, this);
       const xYear = x.invert(mx);

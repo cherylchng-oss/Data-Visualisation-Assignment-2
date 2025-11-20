@@ -207,7 +207,7 @@ function drawChart3(containerSelector, data) {
       .attr("class", "chart-legend-pill");
 
     btn.append("span")
-      .attr("class", "chart-legend-swatch")
+      .attr("class", "chart-legend-pill-swatch")
       .style("background", CHART3_COLORS[j] || "#3b82f6");
 
     btn.append("span").text(j);
@@ -215,7 +215,7 @@ function drawChart3(containerSelector, data) {
 
   // ----- Tooltip -----
   const tooltip = wrap.append("div")
-    .attr("class", "chart-tooltip");
+    .attr("class", "chart-tooltip chart-tooltip--wide");
 
   bars
     .on("mousemove", function (event, d) {
