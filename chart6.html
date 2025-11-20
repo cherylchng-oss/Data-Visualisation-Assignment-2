@@ -44,12 +44,19 @@
           for each jurisdiction. A year slider allows filtering from 2008–2024.
         </p>
 
-        <div id="chart6-container"
-             style="background:#fff;border:1px solid var(--line);border-radius:14px;
-                    padding:18px;box-shadow:var(--shadow);margin-top:20px;">
-          <!-- Year slider -->
+        <div id="chart6-container">
+          <!-- Year slider + nav buttons -->
           <div class="chart6-year-control">
+            <button id="chart6-prev-year" class="chart6-year-btn" aria-label="Previous year">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+
             <input id="chart6-year-slider" type="range">
+
+            <button id="chart6-next-year" class="chart6-year-btn" aria-label="Next year">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+
             <div id="chart6-year-label">2008</div>
           </div>
 
@@ -80,7 +87,7 @@
     document.addEventListener("DOMContentLoaded", function () {
       initChart6({
         csvPath: "data folder/Chart6.csv",
-        topoJsonPath: "data folder/australia_states.json", 
+        topoJsonPath: "data folder/australia_states.json",
         svgSelector: "#chart6-svg",
         sliderSelector: "#chart6-year-slider",
         labelSelector: "#chart6-year-label"

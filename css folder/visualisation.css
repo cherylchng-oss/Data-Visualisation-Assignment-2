@@ -1,6 +1,5 @@
 /* =========================================
    LEGEND STYLES FOR CHARTS 1–4
-   (copied from JS .style(...) values)
 ========================================= */
 
 .chart-legend-pill {
@@ -27,7 +26,6 @@
 
 /* =========================================
    LEGEND STYLES FOR CHART 5
-   (copied from chart5.js)
 ========================================= */
 
 .chart-legend-pill-small {
@@ -79,27 +77,213 @@
   padding: 8px 10px;
 }
 
+/* =======================================================
+   CHART 6 – MAP STYLING
+   ======================================================= */
+
+#chart6-container {
+  background: #ffffff;
+  border: 1px solid #d0d7e2;
+  border-radius: 22px;
+  padding: 22px 24px 26px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
+  margin-top: 20px;
+}
+
+/* Slider + arrows */
+.chart6-year-control {
+  position: relative;
+  max-width: 720px;
+  margin: 0 auto 18px;
+  padding: 30px 70px 6px;
+}
+
+#chart6-year-slider {
+  width: 100%;
+  display: block;
+  margin: 0 auto;
+  accent-color: #3b82f6;
+}
+
+#chart6-year-label {
+  position: absolute;
+  top: -14px; /* you liked this height */
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.95rem;
+  font-weight: 700;
+  background: #ffffff;
+  padding: 4px 14px;
+  border-radius: 999px;
+  border: 1px solid #d0d7e2;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.18);
+}
+
+.chart6-year-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.45);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+#chart6-prev-year {
+  left: 10px;
+}
+
+#chart6-next-year {
+  right: 10px;
+}
+
+.chart6-year-btn:hover {
+  transform: translateY(-50%) translateY(-1px);
+  box-shadow: 0 14px 30px rgba(59, 130, 246, 0.55);
+}
+
+.chart6-year-btn i {
+  font-size: 0.9rem;
+}
+
+/* SVG background */
+#chart6-svg {
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
+  display: block;
+  background: radial-gradient(circle at top, #e0f2fe 0, #eff6ff 40%, #f8fafc 100%);
+  border-radius: 18px;
+}
+
+/* Map paths */
+.chart6-map .chart6-state {
+  transition: fill 0.25s ease, stroke-width 0.18s ease, transform 0.18s ease, filter 0.18s ease;
+}
+
+.chart6-map .chart6-state:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
 /* Tooltip */
 .chart6-tooltip {
   position: absolute;
   pointer-events: none;
   background: #0f172a;
   color: #f9fafb;
-  padding: 8px 10px;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.4);
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.45;
+  width: 230px;
+  box-shadow: 0 22px 46px rgba(15, 23, 42, 0.55);
   opacity: 0;
   transition: opacity 0.15s ease;
   z-index: 9999;
 }
 
-/* Legend */
-.chart6-legend {
+.chart6-tooltip-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.chart6-tooltip-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.chart6-tooltip-sub {
+  font-size: 0.72rem;
+  opacity: 0.7;
+}
+
+.chart6-tooltip-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.25);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.chart6-tooltip-pill-label {
+  opacity: 0.8;
+}
+
+.chart6-tooltip-pill-value {
+  font-weight: 700;
+}
+
+.chart6-tooltip-total {
+  margin: 4px 0 8px;
   font-size: 0.8rem;
 }
 
+.chart6-tooltip-total span {
+  font-weight: 700;
+}
+
+.chart6-tooltip-section-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.7;
+  margin-bottom: 4px;
+}
+
+/* rows for each method */
+.chart6-tooltip-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.78rem;
+  padding: 2px 0;
+}
+
+.chart6-tooltip-row--primary {
+  font-weight: 650;
+}
+
+.chart6-tooltip-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.chart6-tooltip-label {
+  flex: 1;
+  margin-left: 6px;
+}
+
+.chart6-tooltip-value {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Legend card */
+.chart6-legend text {
+  fill: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
 .chart6-legend rect {
-  stroke: #0f172a;
-  stroke-width: 0.5;
+  stroke: #ffffff;
+  stroke-width: 0.8;
 }

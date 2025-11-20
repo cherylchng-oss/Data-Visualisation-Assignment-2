@@ -13,6 +13,9 @@ function initChart6(config) {
   const slider = d3.select(sliderSelector);
   const yearLabel = d3.select(labelSelector);
 
+  const prevBtn = d3.select("#chart6-prev-year");
+  const nextBtn = d3.select("#chart6-next-year");
+
   const width = 900;
   const height = 480;
   svg.attr("viewBox", `0 0 ${width} ${height}`);
@@ -53,7 +56,6 @@ function initChart6(config) {
   ])
     .then(([data, mapData]) => {
       console.log("Chart6 – rows loaded:", data.length);
-      console.log("Chart6 – mapData:", mapData);
 
       // ----- Detect GeoJSON vs TopoJSON -----
       let geo;
@@ -64,10 +66,8 @@ function initChart6(config) {
           return;
         }
         const firstKey = objectKeys[0];
-        console.log("Chart6 – using Topology object:", firstKey);
         geo = topojson.feature(mapData, mapData.objects[firstKey]);
       } else {
-        console.log("Chart6 – detected GeoJSON.");
         geo = mapData; // assume GeoJSON
       }
 
@@ -76,7 +76,7 @@ function initChart6(config) {
         return;
       }
 
-      // Group data: Year -> Jurisdiction -> row
+      // Group data: Year -> Jurisdiction -> row[]
       const dataByYear = d3.group(
         data,
         d => d.Year,
@@ -84,12 +84,30 @@ function initChart6(config) {
       );
 
       const years = Array.from(new Set(data.map(d => d.Year))).sort(d3.ascending);
+      const minYear = d3.min(years);
+      const maxYear = d3.max(years);
       let currentYear = years[0];
+
+      // ---- Extent of total fines per year (for brightness scale) ----
+      const finesExtentByYear = new Map();
+      years.forEach(y => {
+        const byJur = dataByYear.get(y);
+        if (!byJur) return;
+        const vals = [];
+        byJur.forEach(rows => {
+          rows.forEach(r => {
+            if (r["Total Fines"] != null) vals.push(+r["Total Fines"]);
+          });
+        });
+        if (vals.length) {
+          finesExtentByYear.set(y, d3.extent(vals));
+        }
+      });
 
       // ----- Slider config -----
       slider
-        .attr("min", d3.min(years))
-        .attr("max", d3.max(years))
+        .attr("min", minYear)
+        .attr("max", maxYear)
         .attr("step", 1)
         .attr("value", currentYear)
         .on("input", (event) => {
@@ -99,6 +117,25 @@ function initChart6(config) {
         });
 
       yearLabel.text(currentYear);
+
+      // Arrow buttons
+      if (!prevBtn.empty()) {
+        prevBtn.on("click", () => {
+          currentYear = Math.max(minYear, currentYear - 1);
+          slider.property("value", currentYear);
+          yearLabel.text(currentYear);
+          updateMap();
+        });
+      }
+
+      if (!nextBtn.empty()) {
+        nextBtn.on("click", () => {
+          currentYear = Math.min(maxYear, currentYear + 1);
+          slider.property("value", currentYear);
+          yearLabel.text(currentYear);
+          updateMap();
+        });
+      }
 
       // ----- Projection & path -----
       const projection = d3.geoMercator()
@@ -111,6 +148,7 @@ function initChart6(config) {
       const statePaths = g.selectAll("path")
         .data(geo.features)
         .join("path")
+        .attr("class", "chart6-state")
         .attr("d", path)
         .attr("stroke", "#0f172a")
         .attr("stroke-width", 0.7)
@@ -127,47 +165,117 @@ function initChart6(config) {
           const fmtComma = d3.format(",.0f");
           const fmtPct = d3.format(".0%");
 
+          // Methods for tooltip + dominant method
+          const methods = [
+            { col: "Camera Percentage", label: "Camera", color: methodColor("Camera") },
+            { col: "Police Percentage", label: "Police", color: methodColor("Police") },
+            { col: "Other Percentage", label: "Other", color: methodColor("Other") },
+            { col: "Unknown Percentage", label: "Unknown", color: methodColor("Unknown") }
+          ];
+
+          let dominant = methods[0];
+          methods.forEach(m => {
+            if ((row[m.col] || 0) > (row[dominant.col] || 0)) {
+              dominant = m;
+            }
+          });
+
+          const rowsHtml = methods.map(m => `
+            <div class="chart6-tooltip-row ${m.label === dominant.label ? "chart6-tooltip-row--primary" : ""}">
+              <span class="chart6-tooltip-dot" style="background:${m.color};"></span>
+              <span class="chart6-tooltip-label">${m.label}</span>
+              <span class="chart6-tooltip-value">${fmtPct(row[m.col] || 0)}</span>
+            </div>
+          `).join("");
+
           tooltip
             .style("opacity", 1)
             .html(`
-              <strong>${abbr}</strong><br/>
-              Year: ${currentYear}<br/>
-              Total fines: ${fmtComma(row["Total Fines"])}<br/>
-              Camera: ${fmtPct(row["Camera Percentage"])}<br/>
-              Police: ${fmtPct(row["Police Percentage"])}<br/>
-              Other: ${fmtPct(row["Other Percentage"])}<br/>
-              Unknown: ${fmtPct(row["Unknown Percentage"])}<br/>
-              Primary method: <strong>${row["Primary Enforcement Method"]}</strong>
+              <div class="chart6-tooltip-header">
+                <div>
+                  <div class="chart6-tooltip-title">${abbr}</div>
+                  <div class="chart6-tooltip-sub">${currentYear}</div>
+                </div>
+                <div class="chart6-tooltip-pill">
+                  <span class="chart6-tooltip-pill-label">Primary</span>
+                  <span class="chart6-tooltip-pill-value" style="color:${methodColor(row["Primary Enforcement Method"]) || "#38bdf8"};">
+                    ${row["Primary Enforcement Method"]}
+                  </span>
+                </div>
+              </div>
+
+              <div class="chart6-tooltip-total">
+                Total fines: <span>${fmtComma(row["Total Fines"] || 0)}</span>
+              </div>
+
+              <div class="chart6-tooltip-section-title">Enforcement mix</div>
+              ${rowsHtml}
             `)
             .style("left", (event.pageX + 16) + "px")
             .style("top", (event.pageY - 28) + "px");
         })
-        .on("mouseleave", () => {
+        .on("mouseenter", function () {
+          d3.select(this)
+            .raise()
+            .transition()
+            .duration(150)
+            .attr("stroke-width", 1.4);
+        })
+        .on("mouseleave", function () {
           tooltip.style("opacity", 0);
+          d3.select(this)
+            .transition()
+            .duration(150)
+            .attr("stroke-width", 0.7);
         });
 
-      // ----- Legend -----
+      // ----- Legend with dark card background -----
       const legend = svg.append("g")
         .attr("class", "chart6-legend")
-        .attr("transform", `translate(${width - 180}, 20)`);
+        .attr("transform", `translate(${width - 190}, 45)`);
 
       const legendItems = methodColor.domain();
+      const cardWidth = 160;
+      const cardHeight = legendItems.length * 20 + 30;
 
-      legend.selectAll("g")
+      // background card
+      legend.append("rect")
+        .attr("class", "chart6-legend-bg")
+        .attr("x", -12)
+        .attr("y", -26)
+        .attr("width", cardWidth)
+        .attr("height", cardHeight)
+        .attr("rx", 14)
+        .attr("ry", 14)
+        .attr("fill", "#0f172a")
+        .attr("opacity", 0.95);
+
+      // title
+      legend.append("text")
+        .attr("x", 0)
+        .attr("y", -8)
+        .text("Primary enforcement")
+        .style("font-weight", "700")
+        .style("font-size", "0.75rem");
+
+      // legend items
+      legend.selectAll("g.chart6-legend-item")
         .data(legendItems)
         .join("g")
-        .attr("transform", (d, i) => `translate(0, ${i * 18})`)
+        .attr("class", "chart6-legend-item")
+        .attr("transform", (d, i) => `translate(0, ${i * 20})`)
         .each(function (d) {
           const gItem = d3.select(this);
+
           gItem.append("rect")
             .attr("width", 14)
             .attr("height", 14)
-            .attr("rx", 2)
-            .attr("ry", 2)
+            .attr("rx", 3)
+            .attr("ry", 3)
             .attr("fill", methodColor(d));
 
           gItem.append("text")
-            .attr("x", 20)
+            .attr("x", 22)
             .attr("y", 11)
             .text(d);
         });
@@ -194,6 +302,24 @@ function initChart6(config) {
         return rows ? rows[0] : null;
       }
 
+      function getFillColor(year, row) {
+        const method = row["Primary Enforcement Method"];
+        const baseColor = methodColor(method);
+        if (!baseColor) return "#e5e7eb";
+
+        const extent = finesExtentByYear.get(year);
+        if (!extent) return baseColor;
+
+        const fines = +row["Total Fines"] || 0;
+        const scale = d3.scaleLinear()
+          .domain(extent)
+          .range([0.55, 0.8]);  // light → darker
+
+        const hsl = d3.hsl(baseColor);
+        hsl.l = scale(fines);
+        return hsl.formatHex();
+      }
+
       function updateMap() {
         statePaths
           .transition()
@@ -202,8 +328,7 @@ function initChart6(config) {
             const abbr = getAbbr(d);
             const row = getRow(currentYear, abbr);
             if (!row) return "#e5e7eb";
-            const method = row["Primary Enforcement Method"];
-            return methodColor(method) || "#e5e7eb";
+            return getFillColor(currentYear, row);
           });
       }
 
