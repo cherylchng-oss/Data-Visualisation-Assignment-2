@@ -12,20 +12,20 @@ function initChart6(config) {
   const svg = d3.select(svgSelector);
   const slider = d3.select(sliderSelector);
   const yearLabel = d3.select(labelSelector);
-
   const prevBtn = d3.select("#chart6-prev-year");
   const nextBtn = d3.select("#chart6-next-year");
+  const pieTitle = d3.select("#chart6-pie-title");
 
   const width = 900;
   const height = 480;
   svg.attr("viewBox", `0 0 ${width} ${height}`);
 
-  // Tooltip
+  // Tooltip for map
   const tooltip = d3.select("body")
     .append("div")
     .attr("class", "chart6-tooltip");
 
-  // Colour by primary enforcement method
+  // Colours by primary enforcement method
   const methodColor = d3.scaleOrdinal()
     .domain(["Camera", "Police", "Other", "Unknown"])
     .range(["#3b82f6", "#22c55e", "#f59e0b", "#6b7280"]);
@@ -76,7 +76,7 @@ function initChart6(config) {
         return;
       }
 
-      // Group data: Year -> Jurisdiction -> row[]
+      // Group data: Year -> Jurisdiction -> rows[]
       const dataByYear = d3.group(
         data,
         d => d.Year,
@@ -88,7 +88,7 @@ function initChart6(config) {
       const maxYear = d3.max(years);
       let currentYear = years[0];
 
-      // ---- Extent of total fines per year (for brightness scale) ----
+      // Extent of total fines per year (for brightness scale)
       const finesExtentByYear = new Map();
       years.forEach(y => {
         const byJur = dataByYear.get(y);
@@ -104,7 +104,32 @@ function initChart6(config) {
         }
       });
 
-      // ----- Slider config -----
+      // ===== PIE CHART SETUP (Australia-wide enforcement mix) =====
+      const pieSvg = d3.select("#chart6-pie-svg");
+      const pieWidth = 260;
+      const pieHeight = 260;
+      const pieRadius = Math.min(pieWidth, pieHeight) / 2 - 12;
+
+      pieSvg.attr("viewBox", `0 0 ${pieWidth} ${pieHeight}`);
+
+      const pieGroup = pieSvg.append("g")
+        .attr("transform", `translate(${pieWidth / 2}, ${pieHeight / 2})`);
+
+      const pie = d3.pie()
+        .value(d => d.value)
+        .sort(null);
+
+      const arc = d3.arc()
+        .innerRadius(0)
+        .outerRadius(pieRadius);
+
+      const labelArc = d3.arc()
+        .innerRadius(pieRadius * 0.7)
+        .outerRadius(pieRadius * 0.7);
+
+      const pctFormat = d3.format(".0%");
+
+      // ===== Slider config =====
       slider
         .attr("min", minYear)
         .attr("max", maxYear)
@@ -113,18 +138,17 @@ function initChart6(config) {
         .on("input", (event) => {
           currentYear = +event.target.value;
           yearLabel.text(currentYear);
-          updateMap();
+          updateMapAndPie();
         });
 
       yearLabel.text(currentYear);
 
-      // Arrow buttons
       if (!prevBtn.empty()) {
         prevBtn.on("click", () => {
           currentYear = Math.max(minYear, currentYear - 1);
           slider.property("value", currentYear);
           yearLabel.text(currentYear);
-          updateMap();
+          updateMapAndPie();
         });
       }
 
@@ -133,11 +157,11 @@ function initChart6(config) {
           currentYear = Math.min(maxYear, currentYear + 1);
           slider.property("value", currentYear);
           yearLabel.text(currentYear);
-          updateMap();
+          updateMapAndPie();
         });
       }
 
-      // ----- Projection & path -----
+      // ===== Projection & path for map =====
       const projection = d3.geoMercator()
         .fitSize([width, height], geo);
 
@@ -181,34 +205,39 @@ function initChart6(config) {
           });
 
           const rowsHtml = methods.map(m => `
-            <div class="chart6-tooltip-row ${m.label === dominant.label ? "chart6-tooltip-row--primary" : ""}">
-              <span class="chart6-tooltip-dot" style="background:${m.color};"></span>
-              <span class="chart6-tooltip-label">${m.label}</span>
-              <span class="chart6-tooltip-value">${fmtPct(row[m.col] || 0)}</span>
+            <div class="chart6-tip-row ${m.label === dominant.label ? "chart6-tip-row--primary" : ""}">
+              <div class="chart6-tip-row-left">
+                <span class="chart6-tip-dot" style="background:${m.color};"></span>
+                <span class="chart6-tip-row-label">${m.label}</span>
+              </div>
+              <span class="chart6-tip-row-value">${fmtPct(row[m.col] || 0)}</span>
             </div>
           `).join("");
+
+          const primaryColor = methodColor(row["Primary Enforcement Method"]) || "#38bdf8";
 
           tooltip
             .style("opacity", 1)
             .html(`
-              <div class="chart6-tooltip-header">
-                <div>
-                  <div class="chart6-tooltip-title">${abbr}</div>
-                  <div class="chart6-tooltip-sub">${currentYear}</div>
-                </div>
-                <div class="chart6-tooltip-pill">
-                  <span class="chart6-tooltip-pill-label">Primary</span>
-                  <span class="chart6-tooltip-pill-value" style="color:${methodColor(row["Primary Enforcement Method"]) || "#38bdf8"};">
-                    ${row["Primary Enforcement Method"]}
-                  </span>
-                </div>
+              <div class="chart6-tip-header">
+                <div class="chart6-tip-region">${abbr}</div>
+                <div class="chart6-tip-year">${currentYear}</div>
               </div>
 
-              <div class="chart6-tooltip-total">
-                Total fines: <span>${fmtComma(row["Total Fines"] || 0)}</span>
+              <div class="chart6-tip-primary-row">
+                <span class="chart6-tip-primary-label">Primary</span>
+                <span class="chart6-tip-primary-chip">
+                  <span class="chart6-tip-dot" style="background:${primaryColor};"></span>
+                  <span class="chart6-tip-primary-text">${row["Primary Enforcement Method"]}</span>
+                </span>
               </div>
 
-              <div class="chart6-tooltip-section-title">Enforcement mix</div>
+              <div class="chart6-tip-total">
+                Total fines
+                <span class="chart6-tip-total-value">${fmtComma(row["Total Fines"] || 0)}</span>
+              </div>
+
+              <div class="chart6-tip-section-title">Enforcement mix</div>
               ${rowsHtml}
             `)
             .style("left", (event.pageX + 16) + "px")
@@ -229,7 +258,7 @@ function initChart6(config) {
             .attr("stroke-width", 0.7);
         });
 
-      // ----- Legend with dark card background -----
+      // ===== Legend with dark card background =====
       const legend = svg.append("g")
         .attr("class", "chart6-legend")
         .attr("transform", `translate(${width - 190}, 45)`);
@@ -238,7 +267,6 @@ function initChart6(config) {
       const cardWidth = 160;
       const cardHeight = legendItems.length * 20 + 30;
 
-      // background card
       legend.append("rect")
         .attr("class", "chart6-legend-bg")
         .attr("x", -12)
@@ -250,7 +278,6 @@ function initChart6(config) {
         .attr("fill", "#0f172a")
         .attr("opacity", 0.95);
 
-      // title
       legend.append("text")
         .attr("x", 0)
         .attr("y", -8)
@@ -258,7 +285,6 @@ function initChart6(config) {
         .style("font-weight", "700")
         .style("font-size", "0.75rem");
 
-      // legend items
       legend.selectAll("g.chart6-legend-item")
         .data(legendItems)
         .join("g")
@@ -302,6 +328,34 @@ function initChart6(config) {
         return rows ? rows[0] : null;
       }
 
+      // National totals per method for the selected year
+      function getNationalMix(year) {
+        const byJur = dataByYear.get(year);
+        if (!byJur) return [];
+
+        const totals = { Camera: 0, Police: 0, Other: 0, Unknown: 0 };
+
+        byJur.forEach(rows => {
+          rows.forEach(r => {
+            const total = +r["Total Fines"] || 0;
+            totals.Camera  += total * (r["Camera Percentage"]  || 0);
+            totals.Police  += total * (r["Police Percentage"]  || 0);
+            totals.Other   += total * (r["Other Percentage"]   || 0);
+            totals.Unknown += total * (r["Unknown Percentage"] || 0);
+          });
+        });
+
+        const sum = totals.Camera + totals.Police + totals.Other + totals.Unknown;
+        if (!sum) return [];
+
+        return [
+          { method: "Camera",  value: totals.Camera,  pct: totals.Camera  / sum },
+          { method: "Police",  value: totals.Police,  pct: totals.Police  / sum },
+          { method: "Other",   value: totals.Other,   pct: totals.Other   / sum },
+          { method: "Unknown", value: totals.Unknown, pct: totals.Unknown / sum }
+        ];
+      }
+
       function getFillColor(year, row) {
         const method = row["Primary Enforcement Method"];
         const baseColor = methodColor(method);
@@ -313,14 +367,57 @@ function initChart6(config) {
         const fines = +row["Total Fines"] || 0;
         const scale = d3.scaleLinear()
           .domain(extent)
-          .range([0.55, 0.8]);  // light → darker
+          .range([0.55, 0.8]); // light → darker
 
         const hsl = d3.hsl(baseColor);
         hsl.l = scale(fines);
         return hsl.formatHex();
       }
 
-      function updateMap() {
+      // ===== PIE update =====
+      function updatePie(year) {
+        const mix = getNationalMix(year);
+        pieTitle.text(`Australia enforcement mix (${year})`);
+
+        const arcsData = pie(mix);
+
+        const paths = pieGroup.selectAll("path")
+          .data(arcsData, d => d.data.method);
+
+        paths.join(
+          enter => enter.append("path")
+            .attr("fill", d => methodColor(d.data.method))
+            .attr("d", arc)
+            .each(function (d) { this._current = d; }),
+          update => update
+            .transition().duration(400)
+            .attrTween("d", function (d) {
+              const i = d3.interpolate(this._current, d);
+              this._current = i(0);
+              return t => arc(i(t));
+            }),
+          exit => exit.remove()
+        );
+
+        const labels = pieGroup.selectAll("text.chart6-pie-label")
+          .data(arcsData, d => d.data.method);
+
+        labels.join(
+          enter => enter.append("text")
+            .attr("class", "chart6-pie-label")
+            .attr("transform", d => `translate(${labelArc.centroid(d)})`)
+            .attr("dy", "0.35em")
+            .text(d => pctFormat(d.data.pct)),
+          update => update
+            .transition().duration(400)
+            .attr("transform", d => `translate(${labelArc.centroid(d)})`)
+            .text(d => pctFormat(d.data.pct)),
+          exit => exit.remove()
+        );
+      }
+
+      // ===== Map update (also triggers pie update) =====
+      function updateMapAndPie() {
         statePaths
           .transition()
           .duration(400)
@@ -330,10 +427,12 @@ function initChart6(config) {
             if (!row) return "#e5e7eb";
             return getFillColor(currentYear, row);
           });
+
+        updatePie(currentYear);
       }
 
       // Initial render
-      updateMap();
+      updateMapAndPie();
     })
     .catch(err => {
       console.error("Chart6: error loading data or map:", err);

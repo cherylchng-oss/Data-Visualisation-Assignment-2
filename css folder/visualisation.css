@@ -78,7 +78,7 @@
 }
 
 /* =======================================================
-   CHART 6 – MAP STYLING
+   CHART 6 – MAP LEFT (BIGGER), PIE RIGHT (SMALLER)
    ======================================================= */
 
 #chart6-container {
@@ -107,7 +107,7 @@
 
 #chart6-year-label {
   position: absolute;
-  top: -14px; /* you liked this height */
+  top: -14px;
   left: 50%;
   transform: translateX(-50%);
   font-size: 0.95rem;
@@ -154,7 +154,20 @@
   font-size: 0.9rem;
 }
 
-/* SVG background */
+/* ===== Layout row: map left, pie right ===== */
+.chart6-layout {
+  display: flex;
+  gap: 22px;
+  align-items: flex-start;
+  margin-top: 14px;
+}
+
+/* Map = main character */
+.chart6-map-shell {
+  flex: 2 1 0;          /* bigger share of width */
+  min-width: 0;
+}
+
 #chart6-svg {
   width: 100%;
   max-width: 860px;
@@ -164,7 +177,7 @@
   border-radius: 18px;
 }
 
-/* Map paths */
+/* Map hover (colour logic stays in JS) */
 .chart6-map .chart6-state {
   transition: fill 0.25s ease, stroke-width 0.18s ease, transform 0.18s ease, filter 0.18s ease;
 }
@@ -174,109 +187,154 @@
   transform: translateY(-1px);
 }
 
-/* Tooltip */
+/* Pie card – smaller on the right */
+.chart6-pie-wrapper {
+  flex: 1 1 0;                 /* smaller share of width */
+  max-width: 260px;
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  padding: 12px 14px 16px;
+  box-shadow: 0 10px 26px rgba(148, 163, 184, 0.35);
+  text-align: center;
+}
+
+.chart6-pie-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+/* Pie SVG itself */
+#chart6-pie-svg {
+  width: 100%;
+  max-width: 200px;
+  height: 200px;
+  display: block;
+  margin: 8px auto 0;
+}
+
+.chart6-pie-label {
+  fill: #0f172a;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+/* ===== Tooltip card ===== */
 .chart6-tooltip {
   position: absolute;
   pointer-events: none;
-  background: #0f172a;
-  color: #f9fafb;
+  background: #020617; /* very dark navy */
+  color: #e5e7eb;
   padding: 14px 18px;
-  border-radius: 14px;
+  border-radius: 16px;
   font-size: 0.82rem;
   font-weight: 500;
   line-height: 1.45;
-  width: 230px;
-  box-shadow: 0 22px 46px rgba(15, 23, 42, 0.55);
+  width: 240px;
+  box-shadow: 0 22px 46px rgba(15, 23, 42, 0.6);
   opacity: 0;
   transition: opacity 0.15s ease;
   z-index: 9999;
 }
 
-.chart6-tooltip-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+/* Tooltip header: state + year */
+.chart6-tip-header {
   margin-bottom: 6px;
 }
 
-.chart6-tooltip-title {
-  font-size: 0.9rem;
+.chart6-tip-region {
+  font-size: 0.92rem;
   font-weight: 700;
 }
 
-.chart6-tooltip-sub {
-  font-size: 0.72rem;
+.chart6-tip-year {
+  font-size: 0.78rem;
   opacity: 0.7;
 }
 
-.chart6-tooltip-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: rgba(148, 163, 184, 0.25);
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.chart6-tooltip-pill-label {
-  opacity: 0.8;
-}
-
-.chart6-tooltip-pill-value {
-  font-weight: 700;
-}
-
-.chart6-tooltip-total {
-  margin: 4px 0 8px;
-  font-size: 0.8rem;
-}
-
-.chart6-tooltip-total span {
-  font-weight: 700;
-}
-
-.chart6-tooltip-section-title {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  opacity: 0.7;
-  margin-bottom: 4px;
-}
-
-/* rows for each method */
-.chart6-tooltip-row {
+/* Primary method row */
+.chart6-tip-primary-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  font-size: 0.78rem;
-  padding: 2px 0;
+  margin: 4px 0 6px;
+  font-size: 0.8rem;
 }
 
-.chart6-tooltip-row--primary {
-  font-weight: 650;
+.chart6-tip-primary-label {
+  opacity: 0.8;
 }
 
-.chart6-tooltip-dot {
+.chart6-tip-primary-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.8);
+}
+
+.chart6-tip-dot {
   width: 10px;
   height: 10px;
   border-radius: 3px;
 }
 
-.chart6-tooltip-label {
-  flex: 1;
-  margin-left: 6px;
+.chart6-tip-primary-text {
+  font-weight: 600;
 }
 
-.chart6-tooltip-value {
+/* Total fines line */
+.chart6-tip-total {
+  font-size: 0.8rem;
+  margin-bottom: 8px;
+}
+
+.chart6-tip-total-value {
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+/* Section label */
+.chart6-tip-section-title {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.7;
+  margin-bottom: 3px;
+}
+
+/* Enforcement mix rows */
+.chart6-tip-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.78rem;
+  padding: 1px 0;
+}
+
+.chart6-tip-row-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chart6-tip-row-label {
+  color: #e5e7eb;
+  font-weight: 500;
+}
+
+.chart6-tip-row-value {
   font-variant-numeric: tabular-nums;
 }
 
-/* Legend card */
+.chart6-tip-row--primary .chart6-tip-row-label,
+.chart6-tip-row--primary .chart6-tip-row-value {
+  font-weight: 650;
+}
+
+/* ===== Legend card on map ===== */
 .chart6-legend text {
   fill: #ffffff;
   font-size: 0.78rem;
