@@ -1,15 +1,13 @@
-// js/chart3.js
-
 // Keep colours consistent with Chart 2
 const CHART3_COLORS = {
-  NSW: "#3b82f6", // blue
-  NT:  "#16a34a", // green-ish
-  QLD:"#facc15",  // yellow
-  SA:  "#f97316", // orange
-  TAS:"#06b6d4",  // teal
-  VIC:"#8b5cf6",  // purple
-  WA: "#ef4444",  // red
-  ACT:"#22c55e"   // light green
+  NSW: "#3b82f6", 
+  NT:  "#16a34a", 
+  QLD:"#facc15", 
+  SA:  "#f97316", 
+  TAS:"#06b6d4",  
+  VIC:"#8b5cf6",  
+  WA: "#ef4444",  
+  ACT:"#22c55e"   
 };
 
 const chart3Fmt = d3.format(",.2f"); // for bar-end labels
@@ -163,7 +161,7 @@ function drawChart3(containerSelector, data) {
     .append("rect")
     .attr("x", x(0))
     .attr("y", d => y(d.jurisdiction) + (y.bandwidth() - barHeight) / 2)
-    .attr("width", 0)                   // start from 0 for animation
+    .attr("width", 0)                   
     .attr("height", barHeight)
     .attr("fill", d => CHART3_COLORS[d.jurisdiction] || "#3b82f6")
     .attr("rx", 6)
@@ -181,7 +179,7 @@ function drawChart3(containerSelector, data) {
     .enter()
     .append("text")
     .attr("class", "value-label")
-    .attr("x", x(0) + 6) // start near 0
+    .attr("x", x(0) + 6) 
     .attr("y", d => y(d.jurisdiction) + y.bandwidth() / 2)
     .attr("dominant-baseline", "middle")
     .attr("font-size", 11)
@@ -219,7 +217,7 @@ function drawChart3(containerSelector, data) {
 
   bars
     .on("mousemove", function (event, d) {
-      const fullValue = d.value; // full precision
+      const fullValue = d.value; 
       const color = CHART3_COLORS[d.jurisdiction] || "#3b82f6";
 
       const html = `

@@ -1,5 +1,3 @@
-// js/chart1.js
-
 // Match the exact dataset columns
 const CHART1_SERIES = [
   { key: "Camera issued fines",  name: "Camera issued fines",  color: "#3b82f6" },
@@ -39,7 +37,7 @@ function initChart1(containerSelector, csvPath) {
 function drawChart1(containerSelector, years, series) {
   const wrap = d3.select(containerSelector);
   wrap.selectAll("*").remove();
-  wrap.style("position", "relative"); // for tooltip positioning
+  wrap.style("position", "relative");
 
   const width  = Math.max(720, wrap.node().clientWidth || 720);
   const height = 460;
@@ -233,7 +231,7 @@ function drawChart1(containerSelector, years, series) {
       const wrapWidth  = wrap.node().clientWidth;
       const wrapHeight = wrap.node().clientHeight;
       const tWidth  = 220;
-      const tHeight = 160; // approximate height
+      const tHeight = 160; 
 
       // try to put tooltip to the right of the mouse; if no space, put left
       let tX = wx + 16;

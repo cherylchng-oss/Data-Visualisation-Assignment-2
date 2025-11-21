@@ -1,7 +1,4 @@
-/* =========================================
-   LEGEND STYLES FOR CHARTS 1–4
-========================================= */
-
+/* LEGEND STYLES FOR CHARTS 1–4 */
 .chart-legend-pill {
   display: inline-flex;
   align-items: center;
@@ -24,10 +21,7 @@
   cursor: default;
 }
 
-/* =========================================
-   LEGEND STYLES FOR CHART 5
-========================================= */
-
+/* LEGEND STYLES FOR CHART 5 */
 .chart-legend-pill-small {
   display: inline-flex;
   align-items: center;
@@ -46,10 +40,7 @@
   border-radius: 3px;
 }
 
-/* =========================================
-   TOOLTIP BASE STYLES (CHARTS 1–5)
-========================================= */
-
+/* TOOLTIP BASE STYLES (CHARTS 1–5) */
 .chart-tooltip {
   position: absolute;
   pointer-events: none;
@@ -59,7 +50,7 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
   font-size: 12px;
   line-height: 1.4;
-  opacity: 0; /* JS will toggle this */
+  opacity: 0; 
 }
 
 /* chart1 & chart2 used padding: 10px */
@@ -77,179 +68,47 @@
   padding: 8px 10px;
 }
 
-/* =======================================================
-   CHART 6 – MAP LEFT (BIGGER), PIE RIGHT (SMALLER)
-   ======================================================= */
-
-#chart6-container {
-  background: #ffffff;
-  border: 1px solid #d0d7e2;
-  border-radius: 22px;
-  padding: 22px 24px 26px;
-  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
-  margin-top: 20px;
-}
-
-/* Slider + arrows */
-.chart6-year-control {
-  position: relative;
-  max-width: 720px;
-  margin: 0 auto 18px;
-  padding: 30px 70px 6px;
-}
-
-#chart6-year-slider {
-  width: 100%;
-  display: block;
-  margin: 0 auto;
-  accent-color: #3b82f6;
-}
-
-#chart6-year-label {
-  position: absolute;
-  top: -14px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.95rem;
-  font-weight: 700;
-  background: #ffffff;
-  padding: 4px 14px;
-  border-radius: 999px;
-  border: 1px solid #d0d7e2;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.18);
-}
-
-.chart6-year-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
-  border: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #3b82f6, #6366f1);
-  color: #ffffff;
-  cursor: pointer;
-  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.45);
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
-}
-
-#chart6-prev-year {
-  left: 10px;
-}
-
-#chart6-next-year {
-  right: 10px;
-}
-
-.chart6-year-btn:hover {
-  transform: translateY(-50%) translateY(-1px);
-  box-shadow: 0 14px 30px rgba(59, 130, 246, 0.55);
-}
-
-.chart6-year-btn i {
-  font-size: 0.9rem;
-}
-
-/* ===== Layout row: map left, pie right ===== */
-.chart6-layout {
-  display: flex;
-  gap: 22px;
-  align-items: flex-start;
-  margin-top: 14px;
-}
-
-/* Map = main character */
-.chart6-map-shell {
-  flex: 2 1 0;          /* bigger share of width */
-  min-width: 0;
-}
-
-#chart6-svg {
-  width: 100%;
-  max-width: 860px;
-  margin: 0 auto;
-  display: block;
-  background: radial-gradient(circle at top, #e0f2fe 0, #eff6ff 40%, #f8fafc 100%);
-  border-radius: 18px;
-}
-
-/* Map hover (colour logic stays in JS) */
-.chart6-map .chart6-state {
-  transition: fill 0.25s ease, stroke-width 0.18s ease, transform 0.18s ease, filter 0.18s ease;
-}
-
-.chart6-map .chart6-state:hover {
-  filter: brightness(1.05);
-  transform: translateY(-1px);
-}
-
-/* Pie card – smaller on the right */
-.chart6-pie-wrapper {
-  flex: 1 1 0;                 /* smaller share of width */
-  max-width: 260px;
-  background: #ffffff;
-  border-radius: 18px;
-  border: 1px solid #e2e8f0;
-  padding: 12px 14px 16px;
-  box-shadow: 0 10px 26px rgba(148, 163, 184, 0.35);
-  text-align: center;
-}
-
-.chart6-pie-title {
-  font-size: 0.8rem;
-  font-weight: 700;
-}
-
-/* Pie SVG itself */
-#chart6-pie-svg {
-  width: 100%;
-  max-width: 200px;
-  height: 200px;
-  display: block;
-  margin: 8px auto 0;
-}
-
+/*chart 6 – tooltip (light, readable) */
 .chart6-pie-label {
   fill: #0f172a;
   font-size: 0.72rem;
   font-weight: 600;
 }
 
-/* ===== Tooltip card ===== */
 .chart6-tooltip {
   position: absolute;
   pointer-events: none;
-  background: #020617; /* very dark navy */
-  color: #e5e7eb;
-  padding: 14px 18px;
-  border-radius: 16px;
-  font-size: 0.82rem;
-  font-weight: 500;
-  line-height: 1.45;
-  width: 240px;
-  box-shadow: 0 22px 46px rgba(15, 23, 42, 0.6);
+  background: #ffffff;
+  color: #0f172a;
+  padding: 16px 20px;
+  border-radius: 18px;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  width: 250px;
+  box-shadow: 0 22px 46px rgba(15, 23, 42, 0.18);
   opacity: 0;
   transition: opacity 0.15s ease;
   z-index: 9999;
+  border: 1px solid #e2e8f0;
 }
 
-/* Tooltip header: state + year */
+/* Header: state + year */
 .chart6-tip-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   margin-bottom: 6px;
 }
 
 .chart6-tip-region {
-  font-size: 0.92rem;
+  font-size: 1rem;
   font-weight: 700;
+  color: #0f172a;
 }
 
 .chart6-tip-year {
-  font-size: 0.78rem;
-  opacity: 0.7;
+  font-size: 0.8rem;
+  color: #64748b;
 }
 
 /* Primary method row */
@@ -257,51 +116,45 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 4px 0 6px;
-  font-size: 0.8rem;
+  margin: 6px 0 8px;
+  font-size: 0.84rem;
+  color: #0f172a;
 }
 
 .chart6-tip-primary-label {
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .chart6-tip-primary-chip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: 999px;
-  background: rgba(15, 23, 42, 0.8);
+  background: #111827;
+  color: #f9fafb;
 }
 
-.chart6-tip-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 3px;
-}
-
-.chart6-tip-primary-text {
-  font-weight: 600;
-}
-
-/* Total fines line */
+/* Total fines */
 .chart6-tip-total {
-  font-size: 0.8rem;
+  font-size: 0.84rem;
   margin-bottom: 8px;
+  color: #1e293b;
 }
 
 .chart6-tip-total-value {
   font-weight: 700;
   margin-left: 4px;
+  color: #0f172a;
 }
 
-/* Section label */
+/* Section title */
 .chart6-tip-section-title {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  opacity: 0.7;
-  margin-bottom: 3px;
+  color: #64748b;
+  margin-bottom: 4px;
 }
 
 /* Enforcement mix rows */
@@ -310,8 +163,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  font-size: 0.78rem;
-  padding: 1px 0;
+  font-size: 0.82rem;
+  padding: 2px 0;
 }
 
 .chart6-tip-row-left {
@@ -320,28 +173,42 @@
   gap: 6px;
 }
 
+.chart6-tip-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+}
+
 .chart6-tip-row-label {
-  color: #e5e7eb;
+  color: #1e293b;        
   font-weight: 500;
 }
 
 .chart6-tip-row-value {
+  color: #1e293b;
   font-variant-numeric: tabular-nums;
+}
+
+/* Highlight the dominant method row */
+.chart6-tip-row--primary {
+  background: #eff6ff;
+  border-radius: 8px;
+  padding: 3px 6px;
 }
 
 .chart6-tip-row--primary .chart6-tip-row-label,
 .chart6-tip-row--primary .chart6-tip-row-value {
-  font-weight: 650;
+  font-weight: 600;
 }
 
-/* ===== Legend card on map ===== */
+/* Legend card on map */
 .chart6-legend text {
-  fill: #ffffff;
+  fill: #0f172a;
   font-size: 0.78rem;
   font-weight: 600;
 }
 
 .chart6-legend rect {
-  stroke: #ffffff;
+  stroke: #ffffff !important;
   stroke-width: 0.8;
 }

@@ -1,5 +1,3 @@
-// js/chart5.js
-
 // Year colours for legend (roughly matching your screenshot)
 const CHART5_COLORS = {
   2008: "#3b82f6",

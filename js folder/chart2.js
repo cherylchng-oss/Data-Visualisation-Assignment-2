@@ -1,5 +1,3 @@
-// js/chart2.js
-
 // Jurisdictions from Chart2.csv
 const CHART2_SERIES = [
   { key: "NSW", name: "NSW", color: "#3b82f6" },
@@ -89,7 +87,6 @@ function drawChart2(wrap, years, allSeries, selectedKey) {
     .domain([xMin - 1, xMax])
     .range([m.left, width - m.right]);
 
-  // Which series to actually draw?
   const series = selectedKey === "ALL"
     ? allSeries
     : allSeries.filter(s => s.key === selectedKey);
@@ -184,7 +181,6 @@ function drawChart2(wrap, years, allSeries, selectedKey) {
   });
 
   // ---------- ANIMATIONS ----------
-  // Animate line drawing when filter changes
   g.selectAll("path")
     .each(function () {
       const totalLength = this.getTotalLength();
@@ -282,7 +278,7 @@ function drawChart2(wrap, years, allSeries, selectedKey) {
       const wrapWidth  = wrap.node().clientWidth;
       const wrapHeight = wrap.node().clientHeight;
       const tWidth  = 260;
-      const tHeight = 170; // approx
+      const tHeight = 170;
 
       let tX = wx + 16;
       if (tX + tWidth > wrapWidth - 10) {

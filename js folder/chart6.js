@@ -1,5 +1,3 @@
-// js/chart6.js
-
 function initChart6(config) {
   const {
     csvPath,
@@ -28,7 +26,7 @@ function initChart6(config) {
   // Colours by primary enforcement method
   const methodColor = d3.scaleOrdinal()
     .domain(["Camera", "Police", "Other", "Unknown"])
-    .range(["#3b82f6", "#22c55e", "#f59e0b", "#6b7280"]);
+    .range(["#3b82f6", "#22c55e", "#f59e0b", "#ef4444"]);
 
   // Map full state names to abbreviations used in CSV
   const nameToAbbr = {
@@ -68,7 +66,7 @@ function initChart6(config) {
         const firstKey = objectKeys[0];
         geo = topojson.feature(mapData, mapData.objects[firstKey]);
       } else {
-        geo = mapData; // assume GeoJSON
+        geo = mapData;
       }
 
       if (!geo || !geo.features || !geo.features.length) {
@@ -275,7 +273,7 @@ function initChart6(config) {
         .attr("height", cardHeight)
         .attr("rx", 14)
         .attr("ry", 14)
-        .attr("fill", "#0f172a")
+        .attr("fill", "white")
         .attr("opacity", 0.95);
 
       legend.append("text")
@@ -365,16 +363,18 @@ function initChart6(config) {
         if (!extent) return baseColor;
 
         const fines = +row["Total Fines"] || 0;
+
+        // Darker blue = higher fines, lighter blue = lower fines
         const scale = d3.scaleLinear()
-          .domain(extent)
-          .range([0.55, 0.8]); // light → darker
+          .domain(extent)           
+          .range([0.8, 0.55])       
+          .clamp(true);
 
         const hsl = d3.hsl(baseColor);
         hsl.l = scale(fines);
         return hsl.formatHex();
       }
 
-      // ===== PIE update =====
       function updatePie(year) {
         const mix = getNationalMix(year);
         pieTitle.text(`Australia enforcement mix (${year})`);
@@ -416,7 +416,6 @@ function initChart6(config) {
         );
       }
 
-      // ===== Map update (also triggers pie update) =====
       function updateMapAndPie() {
         statePaths
           .transition()
@@ -431,7 +430,6 @@ function initChart6(config) {
         updatePie(currentYear);
       }
 
-      // Initial render
       updateMapAndPie();
     })
     .catch(err => {

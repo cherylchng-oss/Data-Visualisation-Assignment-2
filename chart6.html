@@ -23,11 +23,11 @@
       <nav class="nav">
         <ul>
           <li><a href="index.html"><i class="fa-solid fa-house"></i><span>Home</span></a></li>
-          <li><a href="chart1.html"><i class="fa-solid fa-chart-line"></i><span>Chart 1</span></a></li>
-          <li><a href="chart2.html"><i class="fa-solid fa-chart-line"></i><span>Chart 2</span></a></li>
-          <li><a href="chart3.html"><i class="fa-solid fa-chart-bar"></i><span>Chart 3</span></a></li>
-          <li><a href="chart4.html"><i class="fa-solid fa-chart-pie"></i><span>Chart 4</span></a></li>
-          <li><a class="active" href="chart6.html"><i class="fa-solid fa-braille"></i><span>Chart 5</span></a></li>
+          <li><a href="chart4.html"><i class="fa-solid fa-solid fa-chart-pie"></i><span>Fine Sources</span></a></li>
+          <li><a href="chart1.html"><i class="fa-solid fa-chart-line"></i><span>Yearly Trends</span></a></li>
+          <li><a href="chart2.html"><i class="fa-solid fa-chart-line"></i><span>Jurisdiction Trends</span></a></li>
+          <li><a href="chart3.html"><i class="fa-solid fa-chart-bar"></i><span>Fine Rates per Capita</span></a></li>
+          <li><a class="active" href="chart6.html"><i class="fa-solid fa-map"></i><span>Enforcement Map</span></a></li>
           <li><a href="about_us.html"><i class="fa-solid fa-circle-info"></i><span>About Us</span></a></li>
         </ul>
       </nav>
@@ -43,43 +43,36 @@
           for each jurisdiction. A year slider allows filtering from 2008–2024.
         </p>
 
-        <div id="chart6-container">
+        <div class="chart6-row">
+          <div id="chart6-container">
 
-          <!-- Slider controls -->
-          <div class="chart6-year-control">
-            <button id="chart6-prev-year" class="chart6-year-btn" aria-label="Previous year">
-              <i class="fa-solid fa-chevron-left"></i>
-            </button>
+            <div class="chart6-year-control">
+              <button id="chart6-prev-year" class="chart6-year-btn" aria-label="Previous year">
+                <i class="fa-solid fa-chevron-left"></i>
+              </button>
 
-            <input id="chart6-year-slider" type="range">
+              <div class="chart6-year-slider-shell">
+                <input id="chart6-year-slider" type="range">
+                <div id="chart6-year-label">2008</div>
+              </div>
 
-            <button id="chart6-next-year" class="chart6-year-btn" aria-label="Next year">
-              <i class="fa-solid fa-chevron-right"></i>
-            </button>
-
-            <div id="chart6-year-label">2008</div>
-          </div>
-
-          <!-- Map + pie row -->
-          <div class="chart6-layout">
+              <button id="chart6-next-year" class="chart6-year-btn" aria-label="Next year">
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+            
             <div class="chart6-map-shell">
               <svg id="chart6-svg"></svg>
             </div>
-
-            <div class="chart6-pie-wrapper">
-              <div id="chart6-pie-title" class="chart6-pie-title">
-                Australia enforcement mix (2008)
-              </div>
-              <svg id="chart6-pie-svg"></svg>
-            </div>
           </div>
 
+          <div class="chart6-pie-wrapper">
+            <div id="chart6-pie-title" class="chart6-pie-title">
+              Australia enforcement mix (2008)
+            </div>
+            <svg id="chart6-pie-svg"></svg>
+          </div>
         </div>
-
-        <p style="text-align:center;margin-top:16px;">
-          <strong>Figure 6.</strong> Map of speeding fines and primary enforcement methods by jurisdiction,
-          with national enforcement mix for the selected year.
-        </p>
       </div>
     </section>
   </main>

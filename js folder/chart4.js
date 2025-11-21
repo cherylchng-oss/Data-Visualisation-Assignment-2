@@ -1,10 +1,8 @@
-// js/chart4.js
-
 // Use same colours as Chart 1
 const CHART4_SERIES = [
   { key: "Camera issued fines",  name: "Camera issued fines",  color: "#3b82f6" },
   { key: "Police issued fines",  name: "Police issued fines",  color: "#22c55e" },
-  { key: "Other fines",          name: "Other fines",          color: "#facc15" },
+  { key: "Other fines",          name: "Other fines",          color: "#f59e0b" },
   { key: "Unknown fines",        name: "Unknown fines",        color: "#ef4444" }
 ];
 
@@ -58,7 +56,7 @@ function drawChart4(containerSelector, data) {
 
   const width  = Math.max(540, wrap.node().clientWidth || 540);
   const height = 360;
-  const radius = Math.min(width, height) / 2 - 40; // extra padding
+  const radius = Math.min(width, height) / 2 - 40; 
 
   const total = d3.sum(data, d => d.value) || 1;
 
@@ -67,7 +65,6 @@ function drawChart4(containerSelector, data) {
     .attr("width", "100%")
     .attr("height", height);
 
-  // nudge everything down a bit so top labels don’t clip
   const svg = svgRoot.append("g")
     .attr("transform", `translate(${width / 2}, ${height / 2 + 10})`);
 
