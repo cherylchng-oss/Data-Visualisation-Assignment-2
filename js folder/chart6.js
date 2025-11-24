@@ -1,3 +1,5 @@
+// js folder/chart6.js
+
 function initChart6(config) {
   const {
     csvPath,
@@ -13,12 +15,37 @@ function initChart6(config) {
   const prevBtn = d3.select("#chart6-prev-year");
   const nextBtn = d3.select("#chart6-next-year");
   const pieTitle = d3.select("#chart6-pie-title");
+  const listContainer = d3.select("#chart6-list");
+  const container = d3.select("#chart6-container");
+  const fsBtn = d3.select("#chart6-fullscreen-btn");
+
+  if (!fsBtn.empty()) {
+    fsBtn.on("click", () => {
+      const isFull = container.classed("chart6-container--fullscreen");
+
+      // toggle fullscreen class on the map card
+      container.classed("chart6-container--fullscreen", !isFull);
+      // lock/unlock page scroll
+      d3.select("body").classed("chart6-no-scroll", !isFull);
+
+      // swap icon + aria label
+      fsBtn.select("i")
+        .attr(
+          "class",
+          isFull
+            ? "fa-solid fa-up-right-and-down-left-from-center"
+            : "fa-solid fa-down-left-and-up-right-to-center"
+        );
+
+      fsBtn.attr("aria-label", isFull ? "Expand map" : "Exit fullscreen");
+    });
+  }
 
   const width = 900;
   const height = 480;
   svg.attr("viewBox", `0 0 ${width} ${height}`);
 
-  // Tooltip for map
+  // Tooltip for map (styled via .chart6-tooltip in visualisation.css)
   const tooltip = d3.select("body")
     .append("div")
     .attr("class", "chart6-tooltip");
@@ -187,7 +214,6 @@ function initChart6(config) {
           const fmtComma = d3.format(",.0f");
           const fmtPct = d3.format(".0%");
 
-          // Methods for tooltip + dominant method
           const methods = [
             { col: "Camera Percentage", label: "Camera", color: methodColor("Camera") },
             { col: "Police Percentage", label: "Police", color: methodColor("Police") },
@@ -256,7 +282,7 @@ function initChart6(config) {
             .attr("stroke-width", 0.7);
         });
 
-      // ===== Legend with dark card background =====
+      // ===== Legend with card background =====
       const legend = svg.append("g")
         .attr("class", "chart6-legend")
         .attr("transform", `translate(${width - 190}, 45)`);
@@ -326,6 +352,75 @@ function initChart6(config) {
         return rows ? rows[0] : null;
       }
 
+      // --- Table data helper: list of jurisdictions for a year ---
+      function getYearTableData(year) {
+        const byJurisdiction = dataByYear.get(year);
+        if (!byJurisdiction) return [];
+
+        const records = [];
+
+        byJurisdiction.forEach((rows, jurKey) => {
+          if (!rows || !rows.length) return;
+          const r = rows[0];
+
+          const total = +r["Total Fines"] || 0;
+          const camPct = r["Camera Percentage"] || 0;
+          const polPct = r["Police Percentage"] || 0;
+          const othPct = r["Other Percentage"] || 0;
+          const unkPct = r["Unknown Percentage"] || 0;
+
+          records.push({
+            jurisdiction: jurKey,
+            cameraCount: total * camPct,
+            policeCount: total * polPct,
+            otherCount: total * othPct,
+            unknownCount: total * unkPct,
+            totalFines: total
+          });
+        });
+
+        // Sort by total fines descending
+        records.sort((a, b) => d3.descending(a.totalFines, b.totalFines));
+        return records;
+      }
+
+      // --- Render / update the list under the pie chart ---
+      function updateList(year) {
+        const rows = getYearTableData(year);
+        const fmtComma = d3.format(",.0f");
+
+        listContainer.selectAll("*").remove();
+
+        if (!rows.length) {
+          listContainer.append("p").text("No data available for this year.");
+          return;
+        }
+
+        const table = listContainer
+          .append("table")
+          .attr("class", "chart6-table");
+
+        const thead = table.append("thead").append("tr");
+        thead.append("th").text("ID");
+        thead.append("th").text("Jurisdiction");
+        thead.append("th").text("Camera Issued Fines");
+        thead.append("th").text("Police Issued Fines");
+        thead.append("th").text("Other Fines");
+        thead.append("th").text("Unknown Fines");
+
+        const tbody = table.append("tbody");
+
+        rows.forEach((d, i) => {
+          const tr = tbody.append("tr");
+          tr.append("td").text(i + 1);
+          tr.append("td").text(d.jurisdiction);
+          tr.append("td").text(fmtComma(d.cameraCount));
+          tr.append("td").text(fmtComma(d.policeCount));
+          tr.append("td").text(fmtComma(d.otherCount));
+          tr.append("td").text(fmtComma(d.unknownCount));
+        });
+      }
+
       // National totals per method for the selected year
       function getNationalMix(year) {
         const byJur = dataByYear.get(year);
@@ -364,10 +459,10 @@ function initChart6(config) {
 
         const fines = +row["Total Fines"] || 0;
 
-        // Darker blue = higher fines, lighter blue = lower fines
+        // Darker = higher fines
         const scale = d3.scaleLinear()
-          .domain(extent)           
-          .range([0.8, 0.55])       
+          .domain(extent)
+          .range([0.8, 0.55])
           .clamp(true);
 
         const hsl = d3.hsl(baseColor);
@@ -377,7 +472,7 @@ function initChart6(config) {
 
       function updatePie(year) {
         const mix = getNationalMix(year);
-        pieTitle.text(`Australia enforcement mix (${year})`);
+        pieTitle.text(`Enforcement Method Distribution (${year})`);
 
         const arcsData = pie(mix);
 
@@ -428,8 +523,10 @@ function initChart6(config) {
           });
 
         updatePie(currentYear);
+        updateList(currentYear); // 👈 update the list whenever year changes
       }
 
+      // initial render
       updateMapAndPie();
     })
     .catch(err => {

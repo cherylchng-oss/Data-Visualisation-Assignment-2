@@ -165,6 +165,7 @@ function drawChart1(containerSelector, years, series) {
 
     btn.append("span")
       .attr("class", "chart-legend-pill-swatch")
+      .style("border-radius", "50%")
       .style("background", s.color);
 
     btn.append("span").text(s.name);

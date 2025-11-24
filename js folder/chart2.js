@@ -12,6 +12,9 @@ const CHART2_SERIES = [
 
 const chart2Fmt = d3.format(",.0f"); // for tooltip numbers
 
+// Stores which jurisdiction is currently highlighted (clicked)
+let CHART2_HIGHLIGHT_KEY = null;
+
 // Global init function
 function initChart2(containerSelector, csvPath) {
   d3.csv(csvPath).then(raw => {
@@ -57,6 +60,12 @@ function initChart2(containerSelector, csvPath) {
     // update on dropdown change
     select.on("change", function () {
       selectedKey = this.value;
+
+      // if user filters to one jurisdiction, clear any highlight
+      if (selectedKey !== "ALL") {
+        CHART2_HIGHLIGHT_KEY = null;
+      }
+
       render();
     });
 
@@ -87,6 +96,7 @@ function drawChart2(wrap, years, allSeries, selectedKey) {
     .domain([xMin - 1, xMax])
     .range([m.left, width - m.right]);
 
+  // Which series to actually draw?
   const series = selectedKey === "ALL"
     ? allSeries
     : allSeries.filter(s => s.key === selectedKey);
@@ -159,25 +169,63 @@ function drawChart2(wrap, years, allSeries, selectedKey) {
 
   const g = svg.append("g");
 
+  // Opacity based on highlight
+  function getSeriesOpacity(seriesKey) {
+    if (selectedKey !== "ALL") return 1;              
+    if (!CHART2_HIGHLIGHT_KEY) return 1;              
+    return CHART2_HIGHLIGHT_KEY === seriesKey ? 1 : 0.18; 
+  }
+
   // Draw lines + points for visible jurisdictions
   series.forEach(s => {
     const valid = s.values.filter(v => v.value != null);
+    const isClickable = selectedKey === "ALL";
 
-    g.append("path")
+    // line
+    const path = g.append("path")
       .datum(valid)
       .attr("fill", "none")
       .attr("stroke", s.color)
       .attr("stroke-width", 2.2)
+      .attr("opacity", getSeriesOpacity(s.key))
       .attr("d", line);
 
-    g.selectAll(null)
+    if (isClickable) {
+      path.style("cursor", "pointer")
+        .on("click", function () {
+          // toggle highlight on click
+          if (CHART2_HIGHLIGHT_KEY === s.key) {
+            CHART2_HIGHLIGHT_KEY = null;     // remove highlight
+          } else {
+            CHART2_HIGHLIGHT_KEY = s.key;    // set new highlight
+          }
+          // redraw with updated highlight state
+          drawChart2(wrap, years, allSeries, selectedKey);
+        });
+    }
+
+    // points
+    const circles = g.selectAll(null)
       .data(valid)
       .enter()
       .append("circle")
       .attr("r", 3)
       .attr("fill", s.color)
       .attr("cx", d => x(d.year))
-      .attr("cy", d => y(d.value));
+      .attr("cy", d => y(d.value))
+      .attr("opacity", getSeriesOpacity(s.key));
+
+    if (isClickable) {
+      circles.style("cursor", "pointer")
+        .on("click", function () {
+          if (CHART2_HIGHLIGHT_KEY === s.key) {
+            CHART2_HIGHLIGHT_KEY = null;
+          } else {
+            CHART2_HIGHLIGHT_KEY = s.key;
+          }
+          drawChart2(wrap, years, allSeries, selectedKey);
+        });
+    }
   });
 
   // ---------- ANIMATIONS ----------
@@ -195,11 +243,17 @@ function drawChart2(wrap, years, allSeries, selectedKey) {
 
   // Fade in points slightly after the lines
   g.selectAll("circle")
-    .attr("opacity", 0)
+    .attr("opacity", function () {
+      // keep opacity rule consistent with highlight
+      // (already set above, so don't override here)
+      return d3.select(this).attr("opacity");
+    })
     .transition()
     .duration(500)
     .delay(300)
-    .attr("opacity", 1);
+    .attr("opacity", function () {
+      return d3.select(this).attr("opacity");
+    });
 
   // ----- Legend (static, no filter) -----
   const legend = d3.select("#chart2-legend");
@@ -212,6 +266,7 @@ function drawChart2(wrap, years, allSeries, selectedKey) {
 
     btn.append("span")
       .attr("class", "chart-legend-pill-swatch")
+      .style("border-radius", "50%")
       .style("background", s.color);
 
     btn.append("span").text(s.name);

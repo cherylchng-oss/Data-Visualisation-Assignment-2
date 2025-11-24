@@ -34,7 +34,6 @@ function initChart4(containerSelector, csvPath) {
       }
     });
 
-    // keep all three categories so labels always show
     const data = Object.entries(agg).map(([method, value]) => ({
       method,
       value,
@@ -56,7 +55,7 @@ function drawChart4(containerSelector, data) {
 
   const width  = Math.max(540, wrap.node().clientWidth || 540);
   const height = 360;
-  const radius = Math.min(width, height) / 2 - 40; 
+  const radius = Math.min(width, height) / 2 - 40;
 
   const total = d3.sum(data, d => d.value) || 1;
 
@@ -78,7 +77,6 @@ function drawChart4(containerSelector, data) {
     .innerRadius(0)
     .outerRadius(radius);
 
-  // base positions slightly outside the pie
   const outerArc = d3.arc()
     .innerRadius(radius * 1.05)
     .outerRadius(radius * 1.05);
@@ -88,8 +86,11 @@ function drawChart4(containerSelector, data) {
   }
 
   // ---------- TOOLTIP ----------
-  const tooltip = wrap.append("div")
-    .attr("class", "chart-tooltip chart-tooltip--compact");
+  d3.select("body").selectAll(".chart4-tooltip").remove();
+
+  const tooltip = d3.select("body")
+    .append("div")
+    .attr("class", "chart-tooltip chart-tooltip-chart45");
 
   // ---------- PIE SLICES ----------
   const slices = svg.selectAll("path.slice")
@@ -104,13 +105,27 @@ function drawChart4(containerSelector, data) {
   slices
     .on("pointerenter", function (event, d) {
       const pct = chart4PctFmt((d.data.value / total) * 100);
+      const color = d.data.color;
+
       tooltip
         .html(`
-          <div style="font-weight:600;margin-bottom:4px;">
+          <div style="font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+            <span style="
+              width:10px;height:10px;
+              border-radius:50%;
+              background:${color};
+              display:inline-block;">
+            </span>
             ${d.data.name}
           </div>
-          <div>Fines: ${d.data.value.toLocaleString()}</div>
-          <div>Share: ${pct}%</div>
+          <div style="display:flex;justify-content:space-between;">
+            <span>Fines</span>
+            <strong>${d.data.value.toLocaleString()}</strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;">
+            <span>Share</span>
+            <strong>${pct}%</strong>
+          </div>
         `)
         .style("opacity", 1);
 
@@ -119,18 +134,18 @@ function drawChart4(containerSelector, data) {
     .on("pointermove", function (event) {
       tooltip
         .style("left", `${event.pageX + 16}px`)
-        .style("top", `${event.pageY - 20}px`);
+        .style("top", `${event.pageY - 28}px`);
     })
     .on("pointerleave", function () {
       tooltip.style("opacity", 0);
       slices.style("opacity", 1);
     });
 
-  // ---------- BUILD LABEL LAYOUT (group by side, stack vertically) ----------
+  // ---------- BUILD LABEL LAYOUT ----------
   const layout = [];
 
   arcs.forEach(d => {
-    const [_, baseY] = outerArc.centroid(d);
+    const [, baseY] = outerArc.centroid(d);
     const angle = midAngle(d);
     const side = angle < Math.PI ? "right" : "left";
     layout.push({ arc: d, side, baseY });
@@ -159,7 +174,7 @@ function drawChart4(containerSelector, data) {
 
   const allLayout = right.concat(left);
 
-  // ---------- LEADER LINES (slice -> just outside -> label) ----------
+  // ---------- LEADER LINES ----------
   svg.selectAll("polyline")
     .data(allLayout)
     .enter()
@@ -174,7 +189,7 @@ function drawChart4(containerSelector, data) {
       return [p1, p2, p3];
     });
 
-  // ---------- LABELS (neat, not overlapping) ----------
+  // ---------- LABELS ----------
   svg.selectAll("text.label")
     .data(allLayout)
     .enter()
@@ -185,7 +200,7 @@ function drawChart4(containerSelector, data) {
     .attr("dy", "0.35em")
     .attr("transform", l => `translate(${l.labelX},${l.labelY})`)
     .style("text-anchor", l => (l.side === "right" ? "start" : "end"))
-    .text(l => l.arc.data.name); // only the name; % is in tooltip
+    .text(l => l.arc.data.name);
 
   // ---------- LEGEND ----------
   const legend = d3.select("#chart4-legend");
@@ -200,6 +215,7 @@ function drawChart4(containerSelector, data) {
 
     btn.append("span")
       .attr("class", "chart-legend-pill-swatch")
+      .style("border-radius", "50%")
       .style("background", s.color);
 
     btn.append("span").text(s.name);

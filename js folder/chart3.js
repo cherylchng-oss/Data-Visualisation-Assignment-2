@@ -206,6 +206,7 @@ function drawChart3(containerSelector, data) {
 
     btn.append("span")
       .attr("class", "chart-legend-pill-swatch")
+      .style("border-radius", "50%")
       .style("background", CHART3_COLORS[j] || "#3b82f6");
 
     btn.append("span").text(j);

@@ -21,25 +21,6 @@
   cursor: default;
 }
 
-/* LEGEND STYLES FOR CHART 5 */
-.chart-legend-pill-small {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 8px;
-  border: 1px solid var(--line, #e5e7eb);
-  border-radius: 999px;
-  background: #ffffff;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.chart-legend-pill-small-swatch {
-  width: 12px;
-  height: 12px;
-  border-radius: 3px;
-}
-
 /* TOOLTIP BASE STYLES (CHARTS 1–5) */
 .chart-tooltip {
   position: absolute;
@@ -53,6 +34,11 @@
   opacity: 0; 
 }
 
+.chart-tooltip-chart45 {
+  padding: 10px 14px;
+  z-index: 9999;
+}
+
 /* chart1 & chart2 used padding: 10px */
 .chart-tooltip--default {
   padding: 10px;
@@ -61,11 +47,6 @@
 /* chart3 used padding: 10px 12px */
 .chart-tooltip--wide {
   padding: 10px 12px;
-}
-
-/* chart4 & chart5 used padding: 8px 10px */
-.chart-tooltip--compact {
-  padding: 8px 10px;
 }
 
 /*chart 6 – tooltip (light, readable) */

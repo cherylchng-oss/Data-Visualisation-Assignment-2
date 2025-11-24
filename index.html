@@ -39,9 +39,7 @@
         <div class="hero-copy">
           <h1><i class="fa-solid fa-gauge"></i> Speeding — Road Safety Enforcement (Australia)</h1>
           <p>
-            Explore speeding infringements across jurisdictions and years. This dashboard
-            transforms complex enforcement data into clean, interactive visuals for
-            understanding trends, comparing regions, and identifying patterns that matter.
+            Explore speeding infringements across jurisdictions and years. This dashboard transforms complex enforcement data into clean, interactive visuals for understanding trends, comparing regions, and identifying patterns that matter.
           </p>
 
           <div class="cta-row">
@@ -74,10 +72,7 @@
         <div>
           <h2><i class="fa-solid fa-book-open"></i> Background</h2>
           <p>
-            Speeding is one of the most common contributors to road trauma. Australian states
-            collect infringement data annually, including camera-issued fines, police-issued fines,
-            and other detection categories. Since 2008, improvements in data collection allow more
-            meaningful trend and jurisdiction comparisons.
+            Speeding is one of the most common contributors to road trauma. Australian states collect infringement data annually, including camera-issued fines, police-issued fines, and other detection categories. Since 2008, improvements in data collection allow more meaningful trend and jurisdiction comparisons.
           </p>
 
           <p class="note">Some years show data variability due to policy changes or reporting adjustments.</p>
@@ -96,18 +91,99 @@
       </div>
     </section>
 
-    <section class="section alt">
-      <div class="container narrow aim-card">
-        <h2><i class="fa-solid fa-bullseye"></i> Aim</h2>
-        <p>
-          Provide an intuitive public dashboard that helps students, policymakers, and the
-          community understand speeding enforcement patterns across Australia — and use those
-          insights to ask better questions about road safety.
-        </p>
+    <!-- ===== Summary snapshot ===== -->
+    <section class="section alt section-summary">
+      <div class="container">
+        <div class="summary-shell">
+          
+          <!-- Left: text / explanation -->
+          <div class="summary-copy">
+            <h2><i class="fa-solid fa-chart-simple"></i> Quick infringement snapshot</h2>
+            <p>
+              Use these filters to see a high-level summary of speeding infringements
+              for a selected year and jurisdiction. The card updates the total number
+              of infringements, how many were issued by police or cameras, and the
+              related arrests and charges.
+            </p>
+          </div>
+
+          <!-- Right: filters + summary card -->
+          <div class="summary-panel">
+            <!-- Filters row -->
+            <div class="summary-filters-row">
+              <div class="summary-filter">
+                <label for="summary-year">Year</label>
+                <select id="summary-year"></select>
+              </div>
+
+              <div class="summary-filter">
+                <label for="summary-juris">Jurisdiction</label>
+                <select id="summary-juris"></select>
+              </div>
+
+              <div class="summary-filter">
+                <label for="summary-method">Detection method</label>
+                <select id="summary-method"></select>
+              </div>
+            </div>
+
+            <!-- Card (IDs kept the same for summary.js) -->
+            <div id="summary-card" class="summary-card">
+              <div class="summary-top">
+                <div id="summary-total" class="summary-total">0</div>
+                <div id="summary-caption" class="summary-caption">
+                  Speeding infringements
+                </div>
+              </div>
+
+              <div class="summary-row summary-row--dark">
+                <div class="summary-cell">
+                  <div class="summary-label">Police fines</div>
+                  <div id="summary-police-fines" class="summary-value">0</div>
+                </div>
+                <div class="summary-cell">
+                  <div class="summary-label">Camera fines</div>
+                  <div id="summary-camera-fines" class="summary-value">0</div>
+                </div>
+              </div>
+
+              <div class="summary-row summary-row--light">
+                <div class="summary-cell">
+                  <div class="summary-label">Arrests</div>
+                  <div id="summary-arrests" class="summary-value">0</div>
+                </div>
+                <div class="summary-cell">
+                  <div class="summary-label">Charges</div>
+                  <div id="summary-charges" class="summary-value">0</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="section">
+    <!-- ===== Aim card ===== -->
+    <section class="section section-aim">
+      <div class="container">
+        <div class="aim-card">
+          <div class="aim-icon">
+            <i class="fa-solid fa-bullseye"></i>
+          </div>
+          <div class="aim-text">
+            <h2>Aim</h2>
+            <p>
+              Provide an intuitive public dashboard that helps students, policymakers,
+              and the community understand speeding enforcement patterns across Australia —
+              and use those insights to ask better questions about road safety.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Objectives cards ===== -->
+    <section class="section alt">
       <div class="container">
         <h2><i class="fa-solid fa-list-check"></i> Objectives</h2>
 
@@ -155,5 +231,37 @@
       <span>by Cheryl and Cindy</span>
     </div>
   </footer>
+
+  <button id="backToTop" class="back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="js folder/summary.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      initSummary("#summary-card", "data folder/Summary.csv");
+    });
+  </script>
+
+  <script>
+  const backToTopBtn = document.getElementById("backToTop");
+
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 300) {
+      backToTopBtn.classList.add("show");
+    } else {
+      backToTopBtn.classList.remove("show");
+    }
+  });
+
+  backToTopBtn.addEventListener("click", () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  });
+</script>
+
 </body>
 </html>

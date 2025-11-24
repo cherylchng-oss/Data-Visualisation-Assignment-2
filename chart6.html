@@ -23,7 +23,7 @@
       <nav class="nav">
         <ul>
           <li><a href="index.html"><i class="fa-solid fa-house"></i><span>Home</span></a></li>
-          <li><a href="chart4.html"><i class="fa-solid fa-solid fa-chart-pie"></i><span>Fine Sources</span></a></li>
+          <li><a href="chart4.html"><i class="fa-solid fa-chart-pie"></i><span>Fine Sources</span></a></li>
           <li><a href="chart1.html"><i class="fa-solid fa-chart-line"></i><span>Yearly Trends</span></a></li>
           <li><a href="chart2.html"><i class="fa-solid fa-chart-line"></i><span>Jurisdiction Trends</span></a></li>
           <li><a href="chart3.html"><i class="fa-solid fa-chart-bar"></i><span>Fine Rates per Capita</span></a></li>
@@ -39,13 +39,12 @@
       <div class="container">
         <h1>How do speeding fines and enforcement methods vary by jurisdiction across Australia?</h1>
         <p>
-          Interactive choropleth map of Australia showing the primary enforcement method and related data
-          for each jurisdiction. A year slider allows filtering from 2008–2024.
+          This interactive map shows the primary enforcement method used in each state and territory, together with the total number and mix of speeding fines. Use the year slider to move from 2008–2024, hover over a region to see its enforcement breakdown and fines, and compare the national pie chart and jurisdiction table on the right to understand how methods change over time and across locations.
         </p>
 
         <div class="chart6-row">
+          <!-- LEFT: Map + year controls -->
           <div id="chart6-container">
-
             <div class="chart6-year-control">
               <button id="chart6-prev-year" class="chart6-year-btn" aria-label="Previous year">
                 <i class="fa-solid fa-chevron-left"></i>
@@ -60,20 +59,30 @@
                 <i class="fa-solid fa-chevron-right"></i>
               </button>
             </div>
-            
+
             <div class="chart6-map-shell">
+              <button id="chart6-fullscreen-btn" class="chart6-fs-btn" aria-label="Expand map">
+                <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
+              </button>
               <svg id="chart6-svg"></svg>
             </div>
           </div>
 
-          <div class="chart6-pie-wrapper">
-            <div id="chart6-pie-title" class="chart6-pie-title">
-              Australia enforcement mix (2008)
+          <!-- RIGHT COLUMN: pie card + list card (separate) -->
+          <div class="chart6-right-column">
+            <div class="chart6-pie-wrapper">
+              <div id="chart6-pie-title" class="chart6-pie-title">
+                Australia enforcement mix (2008)
+              </div>
+              <svg id="chart6-pie-svg"></svg>
             </div>
-            <svg id="chart6-pie-svg"></svg>
+
+            <div class="chart6-list-card">
+              <div class="chart6-list-title">Jurisdiction-Level Fine Breakdown</div>
+              <div id="chart6-list" class="chart6-list"></div>
+            </div>
           </div>
         </div>
-      </div>
     </section>
   </main>
 

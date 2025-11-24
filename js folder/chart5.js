@@ -151,22 +151,44 @@ function drawChart5(containerSelector, data) {
     .text(d => chart5NumFmt(d.value));
 
   // ---- Tooltip ----
-  const tooltip = wrap.append("div")
-    .attr("class", "chart-tooltip chart-tooltip--compact");
+  d3.select("body").selectAll(".chart5-tooltip").remove();
+
+  // tooltip attached to body to prevent clipping
+  const tooltip = d3.select("body")
+    .append("div")
+    .attr("class", "chart-tooltip chart-tooltip-chart45");
 
   svg.selectAll("rect")
     .on("mousemove", function (event, d) {
+      const color = CHART5_COLORS[d.year] || "#3b82f6";
+
       const html = `
         <div style="font-weight:600;margin-bottom:4px;">
-          ${d.year}
+          Total fines
         </div>
-        <div>Total fines: ${chart5NumFmt(d.value)}</div>
+        <div style="
+            display:flex;
+            align-items:center;
+            gap:6px;">
+          <span style="
+            width:10px;height:10px;
+            border-radius:50%;
+            background:${color};
+            flex-shrink:0;"></span>
+          <span style="font-weight:500;">${d.year}</span>
+          <span style="
+            margin-left:auto;
+            font-weight:700;">
+            ${chart5NumFmt(d.value)}
+          </span>
+        </div>
       `;
+
       tooltip.html(html).style("opacity", 1);
 
       tooltip
         .style("left", `${event.pageX + 16}px`)
-        .style("top", `${event.pageY - 20}px`);
+        .style("top", `${event.pageY - 28}px`);
     })
     .on("mouseleave", () => {
       tooltip.style("opacity", 0);
@@ -179,10 +201,11 @@ function drawChart5(containerSelector, data) {
   data.forEach(d => {
     const btn = legend.append("button")
       .attr("type", "button")
-      .attr("class", "chart-legend-pill-small");
+      .attr("class", "chart-legend-pill");
 
     btn.append("span")
-      .attr("class", "chart-legend-pill-small-swatch")
+      .attr("class", "chart-legend-pill-swatch")
+      .style("border-radius", "50%")
       .style("background", CHART5_COLORS[d.year] || "#3b82f6");
 
     btn.append("span").text(d.year);
