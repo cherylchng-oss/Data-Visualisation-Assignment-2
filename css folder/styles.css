@@ -494,6 +494,28 @@ header .container {
   border-color: #94a3b8;
 }
 
+/* RESET BUTTON */
+.summary-filter--reset {
+  align-self: flex-end;
+}
+
+.summary-reset-btn {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line, #e5e7eb);
+  background: #f9fafb;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.summary-reset-btn:hover {
+  background: #eef2ff;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+}
+
 .summary-card {
   background: #ffffff;
   border: 1px solid var(--line);

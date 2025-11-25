@@ -32,7 +32,12 @@ function initSummary(cardSelector, csvPath) {
       opt.textContent = y;
       yearSelect.appendChild(opt);
     });
-    yearSelect.value = d3.max(years); // default = latest year
+
+    const defaultYear = d3.max(years);    
+    const defaultJuris = "ALL";            
+    const defaultMethod = "ALL";
+
+    yearSelect.value = defaultYear; // default = latest year
 
     // Jurisdiction dropdown
     jurisSelect.innerHTML = "";
@@ -46,7 +51,8 @@ function initSummary(cardSelector, csvPath) {
       opt.textContent = j;
       jurisSelect.appendChild(opt);
     });
-    jurisSelect.value = "ALL";
+
+    jurisSelect.value = defaultJuris;
 
     // Detection method dropdown
     const methods = [
@@ -63,7 +69,7 @@ function initSummary(cardSelector, csvPath) {
       opt.textContent = m.label;
       methodSelect.appendChild(opt);
     });
-    methodSelect.value = "ALL";
+    methodSelect.value = defaultMethod;
 
     // --- Update logic ---
     function update() {
@@ -150,6 +156,17 @@ function initSummary(cardSelector, csvPath) {
 
     // Initial render
     update();
+
+    const resetBtn = document.getElementById("summary-reset-btn");
+    if (resetBtn) {
+      resetBtn.addEventListener("click", () => {
+        yearSelect.value = defaultYear;
+        jurisSelect.value = defaultJuris;
+        methodSelect.value = defaultMethod;
+
+        update();
+      });
+    }
 
     // Listeners
     yearSelect.addEventListener("change", update);

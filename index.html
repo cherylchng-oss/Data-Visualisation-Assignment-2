@@ -125,9 +125,16 @@
                 <label for="summary-method">Detection method</label>
                 <select id="summary-method"></select>
               </div>
+
+              <!-- Reset button -->
+              <div class="summary-filter summary-filter--reset">
+                <button id="summary-reset-btn" type="button" class="summary-reset-btn">
+                  Reset
+                </button>
+              </div>
             </div>
 
-            <!-- Card (IDs kept the same for summary.js) -->
+            <!-- Card -->
             <div id="summary-card" class="summary-card">
               <div class="summary-top">
                 <div id="summary-total" class="summary-total">0</div>
@@ -244,24 +251,25 @@
     });
   </script>
 
+  <!-- Back to top button -->
   <script>
-  const backToTopBtn = document.getElementById("backToTop");
+    const backToTopBtn = document.getElementById("backToTop");
 
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 300) {
-      backToTopBtn.classList.add("show");
-    } else {
-      backToTopBtn.classList.remove("show");
-    }
-  });
-
-  backToTopBtn.addEventListener("click", () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 300) {
+        backToTopBtn.classList.add("show");
+      } else {
+        backToTopBtn.classList.remove("show");
+      }
     });
-  });
-</script>
+
+    backToTopBtn.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+  </script>
 
 </body>
 </html>
