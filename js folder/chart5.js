@@ -1,22 +1,21 @@
-// Year colours for legend (roughly matching your screenshot)
 const CHART5_COLORS = {
-  2008: "#3b82f6",
-  2009: "#22c55e",
-  2010: "#facc15",
-  2011: "#ef4444",
-  2012: "#38bdf8",
-  2013: "#a855f7",
-  2014: "#ec4899",
-  2015: "#1d4ed8",
-  2016: "#16a34a",
-  2017: "#fbbf24",
-  2018: "#f97316",
-  2019: "#fb7185",
+  2008: "#0ea5e9",
+  2009: "#0ea5e9",
+  2010: "#0ea5e9",
+  2011: "#0ea5e9",
+  2012: "#0ea5e9",
+  2013: "#0ea5e9",
+  2014: "#0ea5e9",
+  2015: "#0ea5e9",
+  2016: "#0ea5e9",
+  2017: "#0ea5e9",
+  2018: "#0ea5e9",
+  2019: "#0ea5e9",
   2020: "#0ea5e9",
-  2021: "#22c55e",
-  2022: "#f97316",
-  2023: "#8b5cf6",
-  2024: "#a855f7"
+  2021: "#0ea5e9",
+  2022: "#0ea5e9",
+  2023: "#0ea5e9",
+  2024: "#0ea5e9"
 };
 
 const chart5NumFmt = d3.format(",.0f");
@@ -29,7 +28,6 @@ function initChart5(containerSelector, csvPath) {
       value: +d["Total Fines"]
     })).filter(d => !isNaN(d.year) && !isNaN(d.value));
 
-    // sort by year just in case
     data.sort((a, b) => d3.ascending(a.year, b.year));
 
     drawChart5(containerSelector, data);
@@ -89,7 +87,7 @@ function drawChart5(containerSelector, data) {
     .selectAll("line")
     .attr("stroke", "#f1f5f9");
 
-  // ---- Y axis (scientific notation like other charts) ----
+  // ---- Y axis  ----
   const yAxis = d3.axisLeft(y)
     .ticks(6)
     .tickFormat(d3.format(".2e"))
@@ -137,7 +135,7 @@ function drawChart5(containerSelector, data) {
     .attr("rx", 4)
     .attr("ry", 4);
 
-  // Value labels on top of bars (optional, can remove if you like)
+  // Value labels on top of bars
   bars.selectAll("text.value-label")
     .data(data)
     .enter()
