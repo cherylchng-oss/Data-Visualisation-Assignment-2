@@ -12,18 +12,24 @@
 </head>
 
 <body>
+  <!-- Accessibility: Skip link for keyboard users -->
   <a class="skip-link" href="#main">Skip to content</a>
 
+  <!-- Site header containing brand and navigation menu -->
   <header class="site-header">
     <div class="container header-inner">
+
+      <!-- Brand icon and dashboard name -->
       <div class="brand">
         <span class="brand-mark" aria-hidden="true"><i class="fa-solid fa-gauge-high"></i></span>
         <span class="brand-text">Speeding Dashboard</span>
       </div>
+
+      <!-- Navigation bar linking to different dashboard pages -->
       <nav class="nav">
         <ul>
           <li><a href="index.html"><i class="fa-solid fa-house"></i><span>Home</span></a></li>
-          <li><a href="chart4.html"><i class="fa-solid fa-solid fa-chart-pie"></i><span>Fine Sources</span></a></li>
+          <li><a href="chart4.html"><i class="fa-solid fa-chart-pie"></i><span>Fine Sources</span></a></li>
           <li><a href="chart1.html"><i class="fa-solid fa-chart-line"></i><span>Yearly Trends</span></a></li>
           <li><a class="active" href="chart2.html"><i class="fa-solid fa-chart-line"></i><span>Jurisdiction Trends</span></a></li>
           <li><a href="chart3.html"><i class="fa-solid fa-chart-bar"></i><span>Fine Rates per Capita</span></a></li>
@@ -31,40 +37,51 @@
           <li><a href="about_us.html"><i class="fa-solid fa-circle-info"></i><span>About Us</span></a></li>
         </ul>
       </nav>
+
     </div>
   </header>
 
   <main id="main">
     <section class="section">
       <div class="container">
+
+        <!-- Page heading + short description -->
         <h1>How have speeding fines changed in each jurisdiction from 2008–2024?</h1>
         <p>
-          This line chart tracks annual speeding fines for each jurisdiction from 2008–2024. Each coloured line represents a state or territory, allowing you to compare their trends over time. Use the jurisdiction filter below to highlight a single region and see its pattern more clearly against the others.
+          This line chart tracks annual speeding fines for every state and territory. Each coloured line 
+          represents a jurisdiction, allowing trend comparison over time. Use the dropdown filter below 
+          to highlight one region more clearly.
         </p>
 
+        <!-- Jurisdiction dropdown filter -->
         <div class="chart-header-row"
              style="display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-top:8px;">
-          <label for="chart2-jurisdiction-select"
-                 style="font-size:0.9rem;color:var(--muted);">
+          <label for="chart2-jurisdiction-select" style="font-size:0.9rem;color:var(--muted);">
             Select jurisdiction
           </label>
+
+          <!-- Dropdown populated by D3 -->
           <select id="chart2-jurisdiction-select"
                   style="padding:6px 10px;border-radius:4px;border:1px solid #d1d5db;background:#fff;">
           </select>
         </div>
 
+        <!-- Chart container (D3 will render the SVG here) -->
         <div id="chart2"
              style="background:#fff;border:1px solid var(--line);border-radius:14px;
                     padding:18px;box-shadow:var(--shadow);margin-top:12px;">
         </div>
 
+        <!-- Legend container (D3 appends legend buttons/labels here) -->
         <div id="chart2-legend"
              style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
         </div>
+
       </div>
     </section>
   </main>
 
+  <!-- Site footer -->
   <footer class="site-footer">
     <div class="container footer-inner">
       <span>@COS30045 Data Visualisation Project</span>
@@ -72,10 +89,16 @@
     </div>
   </footer>
 
+  <!-- D3.js library -->
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+  <!-- JavaScript file for Chart 2 -->
   <script src="js folder/chart2.js"></script>
+
+  <!-- Initialising Chart 2 with the correct container + dataset -->
   <script>
     initChart2("#chart2", "data folder/Chart2.csv");
   </script>
+
 </body>
 </html>

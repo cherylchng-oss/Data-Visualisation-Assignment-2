@@ -11,14 +11,20 @@
 </head>
 
 <body>
+  <!-- Accessibility: Skip link for keyboard users -->
   <a class="skip-link" href="#main">Skip to content</a>
 
+  <!-- Site header containing brand and navigation menu -->
   <header class="site-header">
     <div class="container header-inner">
+
+      <!-- Brand icon and dashboard name -->
       <div class="brand">
         <span class="brand-mark"><i class="fa-solid fa-gauge-high"></i></span>
         <span class="brand-text">Speeding Dashboard</span>
       </div>
+
+      <!-- Navigation bar linking to different dashboard pages -->
       <nav class="nav">
         <ul>
           <li><a class="active" href="index.html"><i class="fa-solid fa-house"></i><span>Home</span></a></li>
@@ -30,10 +36,13 @@
           <li><a href="about_us.html"><i class="fa-solid fa-circle-info"></i><span>About Us</span></a></li>
         </ul>
       </nav>
+
     </div>
   </header>
 
   <main id="main">
+
+    <!-- Hero section introducing the dashboard and main call to action -->
     <section class="hero">
       <div class="container hero-inner">
         <div class="hero-copy">
@@ -48,6 +57,7 @@
           </div>
         </div>
 
+        <!-- Hero card summarising key features -->
         <div class="hero-card">
           <div class="badge-wrap">
             <span class="badge teal"><i class="fa-solid fa-camera"></i> Camera vs Police</span>
@@ -66,9 +76,11 @@
       </div>
     </section>
 
+    <!-- Background section -->
     <section class="section">
       <div class="container grid-2">
 
+        <!-- Background text column -->
         <div>
           <h2><i class="fa-solid fa-book-open"></i> Background</h2>
           <p>
@@ -78,6 +90,7 @@
           <p class="note">Some years show data variability due to policy changes or reporting adjustments.</p>
         </div>
 
+        <!-- Data scope info card -->
         <aside class="info-card">
           <h3><i class="fa-solid fa-database"></i> Data scope</h3>
           <ul>
@@ -91,12 +104,12 @@
       </div>
     </section>
 
-    <!-- ===== Summary snapshot ===== -->
+    <!-- Summary card section with interactive filters -->
     <section class="section alt section-summary">
       <div class="container">
         <div class="summary-shell">
           
-          <!-- Left: text / explanation -->
+          <!-- Summary description column -->
           <div class="summary-copy">
             <h2><i class="fa-solid fa-chart-simple"></i> Quick infringement snapshot</h2>
             <p>
@@ -107,9 +120,8 @@
             </p>
           </div>
 
-          <!-- Right: filters + summary card -->
+          <!-- Summary panel with dropdown filters and dynamic card -->
           <div class="summary-panel">
-            <!-- Filters row -->
             <div class="summary-filters-row">
               <div class="summary-filter">
                 <label for="summary-year">Year</label>
@@ -126,7 +138,6 @@
                 <select id="summary-method"></select>
               </div>
 
-              <!-- Reset button -->
               <div class="summary-filter summary-filter--reset">
                 <button id="summary-reset-btn" type="button" class="summary-reset-btn">
                   Reset
@@ -134,7 +145,7 @@
               </div>
             </div>
 
-            <!-- Card -->
+            <!-- Summary card where values are updated by D3 -->
             <div id="summary-card" class="summary-card">
               <div class="summary-top">
                 <div id="summary-total" class="summary-total">0</div>
@@ -170,7 +181,7 @@
       </div>
     </section>
 
-    <!-- ===== Aim card ===== -->
+    <!-- Aim section -->
     <section class="section section-aim">
       <div class="container">
         <div class="aim-card">
@@ -181,7 +192,7 @@
             <h2>Aim</h2>
             <p>
               Provide an intuitive public dashboard that helps students, policymakers,
-              and the community understand speeding enforcement patterns across Australia —
+              and the community understand speeding enforcement patterns across Australia
               and use those insights to ask better questions about road safety.
             </p>
           </div>
@@ -189,7 +200,7 @@
       </div>
     </section>
 
-    <!-- ===== Objectives cards ===== -->
+    <!-- Objectives section -->
     <section class="section alt">
       <div class="container">
         <h2><i class="fa-solid fa-list-check"></i> Objectives</h2>
@@ -232,6 +243,7 @@
     </section>
   </main>
 
+  <!-- Site footer -->
   <footer class="site-footer">
     <div class="container footer-inner">
       <span>@COS30045 Data Visualisation Project</span>
@@ -239,19 +251,25 @@
     </div>
   </footer>
 
+  <!-- Back to top button -->
   <button id="backToTop" class="back-to-top">
     <i class="fa-solid fa-arrow-up"></i>
   </button>
 
+  <!-- D3.js library -->
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+  <!-- JavaScript file for the summary card on the home page -->
   <script src="js folder/summary.js"></script>
+
+  <!-- Initialising summary card with the correct container + dataset -->
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       initSummary("#summary-card", "data folder/Summary.csv");
     });
   </script>
 
-  <!-- Back to top button -->
+  <!-- Back to top button interaction -->
   <script>
     const backToTopBtn = document.getElementById("backToTop");
 

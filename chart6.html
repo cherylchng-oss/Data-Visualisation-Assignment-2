@@ -12,14 +12,20 @@
 </head>
 
 <body>
+  <!-- Accessibility: Skip link for keyboard users -->
   <a class="skip-link" href="#main">Skip to content</a>
 
+  <!-- Site header containing brand and navigation menu -->
   <header class="site-header">
     <div class="container header-inner">
+
+      <!-- Brand icon and dashboard name -->
       <div class="brand">
         <span class="brand-mark"><i class="fa-solid fa-gauge-high"></i></span>
         <span class="brand-text">Speeding Dashboard</span>
       </div>
+
+      <!-- Navigation bar linking to different dashboard pages -->
       <nav class="nav">
         <ul>
           <li><a href="index.html"><i class="fa-solid fa-house"></i><span>Home</span></a></li>
@@ -31,20 +37,30 @@
           <li><a href="about_us.html"><i class="fa-solid fa-circle-info"></i><span>About Us</span></a></li>
         </ul>
       </nav>
+
     </div>
   </header>
 
   <main id="main">
     <section class="section">
       <div class="container">
+
+        <!-- Page heading + short description -->
         <h1>How do speeding fines and enforcement methods vary by jurisdiction across Australia?</h1>
         <p>
-          This interactive map shows the primary enforcement method used in each state and territory, together with the total number and mix of speeding fines. Use the year slider to move from 2008–2024, hover over a region to see its enforcement breakdown and fines, and compare the national pie chart and jurisdiction table on the right to understand how methods change over time and across locations.
+          This interactive map shows the primary enforcement method used in each state and territory, 
+          together with the total number and mix of speeding fines. Use the year slider to move from 
+          2008–2024, hover over a region to see its breakdown, and compare the pie chart and table 
+          on the right to understand how methods change across time and location.
         </p>
 
+        <!-- Chart container (map + controls + supporting charts) -->
         <div class="chart6-row">
-          <!-- LEFT: Map + year controls -->
+
+          <!-- LEFT COLUMN: map + slider -->
           <div id="chart6-container">
+
+            <!-- Year slider and arrow buttons -->
             <div class="chart6-year-control">
               <button id="chart6-prev-year" class="chart6-year-btn" aria-label="Previous year">
                 <i class="fa-solid fa-chevron-left"></i>
@@ -60,6 +76,7 @@
               </button>
             </div>
 
+            <!-- Map container (D3 will render the SVG here) -->
             <div class="chart6-map-shell">
               <button id="chart6-fullscreen-btn" class="chart6-fs-btn" aria-label="Expand map">
                 <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
@@ -68,8 +85,10 @@
             </div>
           </div>
 
-          <!-- RIGHT COLUMN: pie card + list card (separate) -->
+          <!-- RIGHT COLUMN: pie chart + jurisdiction breakdown -->
           <div class="chart6-right-column">
+
+            <!-- Pie chart container (D3 renders the SVG here) -->
             <div class="chart6-pie-wrapper">
               <div id="chart6-pie-title" class="chart6-pie-title">
                 Australia enforcement mix (2008)
@@ -77,15 +96,20 @@
               <svg id="chart6-pie-svg"></svg>
             </div>
 
+            <!-- Jurisdiction table container -->
             <div class="chart6-list-card">
               <div class="chart6-list-title">Jurisdiction-Level Fine Breakdown</div>
               <div id="chart6-list" class="chart6-list"></div>
             </div>
+
           </div>
         </div>
+
+      </div>
     </section>
   </main>
 
+  <!-- Site footer -->
   <footer class="site-footer">
     <div class="container footer-inner">
       <span>@COS30045 Data Visualisation Project</span>
@@ -93,9 +117,16 @@
     </div>
   </footer>
 
+  <!-- D3.js library -->
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+  <!-- TopoJSON library for rendering geographic shapes -->
   <script src="https://unpkg.com/topojson-client@3"></script>
+
+  <!-- JavaScript file for Chart 6 -->
   <script src="js folder/chart6.js"></script>
+
+  <!-- Initialising Chart 6 with the correct container + dataset -->
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       initChart6({
@@ -107,5 +138,6 @@
       });
     });
   </script>
+
 </body>
 </html>

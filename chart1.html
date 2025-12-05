@@ -12,14 +12,20 @@
 </head>
 
 <body>
+  <!-- Accessibility: Skip navigation link for screen readers -->
   <a class="skip-link" href="#main">Skip to content</a>
 
+  <!-- Website header: brand + navigation menu -->
   <header class="site-header">
     <div class="container header-inner">
+      
+      <!-- Brand icon + title -->
       <div class="brand">
         <span class="brand-mark" aria-hidden="true"><i class="fa-solid fa-gauge-high"></i></span>
         <span class="brand-text">Speeding Dashboard</span>
       </div>
+
+      <!-- Main navigation bar linking to other pages -->
       <nav class="nav">
         <ul>
           <li><a href="index.html"><i class="fa-solid fa-house"></i><span>Home</span></a></li>
@@ -31,22 +37,29 @@
           <li><a href="about_us.html"><i class="fa-solid fa-circle-info"></i><span>About Us</span></a></li>
         </ul>
       </nav>
+
     </div>
   </header>
 
   <main id="main">
     <section class="section">
       <div class="container">
+
+        <!-- Page heading + short description -->
         <h1>How have speeding fines changed in Australia from 2008–2024?</h1>
         <p>
-          This line chart shows the total number of speeding fines issued each year across Australia,split by detection method (camera, police, other, and unknown). It lets you see whether fines are increasing or decreasing over time and which methods contribute most to the total.
+          This line chart shows the total number of speeding fines issued each year across Australia, 
+          split by detection method (camera, police, other, and unknown). It lets you see whether fines 
+          are increasing or decreasing over time and which methods contribute most to the total.
         </p>
 
+        <!-- Chart container (D3 will render the SVG here) -->
         <div id="chart1"
              style="background:#fff;border:1px solid var(--line);border-radius:14px;
                     padding:18px;box-shadow:var(--shadow);margin-top:20px;">
         </div>
 
+        <!-- Legend container (D3 appends legend buttons/labels here) -->
         <div id="chart1-legend"
              style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
         </div>
@@ -55,6 +68,7 @@
     </section>
   </main>
 
+  <!-- Website footer -->
   <footer class="site-footer">
     <div class="container footer-inner">
       <span>@COS30045 Data Visualisation Project</span>
@@ -62,8 +76,13 @@
     </div>
   </footer>
 
+  <!-- D3.js library -->
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+  <!-- Custom JavaScript for Chart 1 -->
   <script src="js folder/chart1.js"></script>
+
+  <!-- Initialising Chart 1 with the correct container + dataset -->
   <script>
     initChart1("#chart1", "data folder/Chart1.csv");
   </script>
