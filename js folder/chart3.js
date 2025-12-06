@@ -1,13 +1,13 @@
 // Keep colours consistent with Chart 2
 const CHART3_COLORS = {
-  NSW: "#3b82f6", 
-  NT:  "#16a34a", 
-  QLD:"#facc15", 
-  SA:  "#f97316", 
-  TAS:"#06b6d4",  
-  VIC:"#8b5cf6",  
-  WA: "#ef4444",  
-  ACT:"#22c55e"   
+  NSW: "#648FFF", 
+  NT:  "#785EF0", 
+  QLD:"#DC267F", 
+  SA:  "#FE6100", 
+  TAS:"#FFCF00",  
+  VIC:"#004D40",  
+  WA: "#C72E0F",  
+  ACT:"#CEAC9D"   
 };
 
 const chart3Fmt = d3.format(",.2f"); // for bar-end labels

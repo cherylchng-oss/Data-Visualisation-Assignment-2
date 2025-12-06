@@ -1,5 +1,3 @@
-// js folder/chart6.js
-
 function initChart6(config) {
   const {
     csvPath,

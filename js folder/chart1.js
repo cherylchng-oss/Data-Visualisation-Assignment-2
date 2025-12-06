@@ -59,7 +59,6 @@ function drawChart1(containerSelector, years, series) {
     .domain([xMin - 1, xMax])
     .range([m.left, width - m.right]);
 
-  // (kept yMax calc though we now force domain max)
   const yMax = d3.max(
     series,
     s => d3.max(s.values, v => (v.value != null ? v.value : 0))
@@ -223,6 +222,104 @@ function drawChart1(containerSelector, years, series) {
             <span>${s.name}</span>
             <span style="margin-left:auto;font-weight:600;">${val}</span>
           </div>`;
+      });
+
+      // compute totals by year (sums across series; treats null as 0)
+      function computeTotalsByYear(series) {
+        const totals = {};
+        series.forEach(s => {
+          s.values.forEach(v => {
+            const y = +v.year;
+            totals[y] = (totals[y] || 0) + (v.value != null ? +v.value : 0);
+          });
+        });
+        return totals;
+      }
+
+      // add Covid annotation (2019 -> 2020). This creates the SVG once and shows it.
+      function renderCovidAnnotation(svg, xScale, yScale, series, opts = {}) {
+        const yearA = opts.yearA ?? 2019;
+        const yearB = opts.yearB ?? 2020;
+        const label  = opts.label  ?? "Drop in fines (COVID-19 lockdowns)";
+
+        const totalsByYear = computeTotalsByYear(series);
+        if (!(yearA in totalsByYear) || !(yearB in totalsByYear)) return;
+
+        // remove any previous annotation (safe when redrawing)
+        svg.selectAll(".covid-annotation").remove();
+        svg.select("#arrowhead-covid").remove();
+
+        const xA = xScale(yearA);
+        const xB = xScale(yearB);
+        const yA = yScale(totalsByYear[yearA]);
+        const yB = yScale(totalsByYear[yearB]);
+
+        // compute nice mid point for label
+        const midX = (xA + xB) / 2;
+        const textOffset = 60;
+        const midY = Math.min(yA, yB) - textOffset;
+
+        // defs marker (arrowhead)
+        svg.append("defs")
+          .append("marker")
+            .attr("id", "arrowhead-covid")
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 10)
+            .attr("refY", 0)
+            .attr("markerWidth", 6)
+            .attr("markerHeight", 6)
+            .attr("orient", "auto")
+          .append("path")
+            .attr("d", "M0,-5L10,0L0,5")
+            .attr("fill", "#475569");
+
+        // group
+        const g = svg.append("g")
+          .attr("class", "covid-annotation")
+          .attr("aria-hidden", "true");
+
+        // curved connector path
+        const curvePath = d3.line().curve(d3.curveMonotoneX)([
+          [xA, yA - 6],
+          [midX, midY],
+          [xB, yB - 6]
+        ]);
+
+        g.append("path")
+          .attr("d", curvePath)
+          .attr("class", "annotation-line")
+          .attr("marker-end", "url(#arrowhead-covid)");
+
+        // label text
+        const text = g.append("text")
+          .attr("x", midX)
+          .attr("y", midY - 8)
+          .attr("text-anchor", "middle")
+          .attr("class", "annotation-text")
+          .text(label);
+
+        // background rect using bbox
+        const padding = 10;
+        const bbox = text.node().getBBox();
+        g.insert("rect", "text")
+          .attr("class", "annotation-bg")
+          .attr("x", bbox.x - padding / 2)
+          .attr("y", bbox.y - padding / 2)
+          .attr("width", bbox.width + padding)
+          .attr("height", bbox.height + padding)
+          .attr("rx", 8)
+          .attr("ry", 8);
+
+        // bring text to front
+        text.raise();
+
+        setTimeout(() => g.classed("show", true), 20);
+      }
+      
+      renderCovidAnnotation(svg, x, y, series, {
+        yearA: 2019,
+        yearB: 2020,
+        label: "Drop in fines (COVID-19 lockdowns)"
       });
 
       tooltip.html(html).style("opacity", 1);

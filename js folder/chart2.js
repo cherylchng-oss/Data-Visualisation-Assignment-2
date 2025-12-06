@@ -1,13 +1,13 @@
 // Jurisdictions from Chart2.csv
 const CHART2_SERIES = [
-  { key: "NSW", name: "NSW", color: "#3b82f6" },
-  { key: "NT",  name: "NT",  color: "#16a34a" },
-  { key: "QLD", name: "QLD", color: "#facc15" },
-  { key: "SA",  name: "SA",  color: "#f97316" },
-  { key: "TAS", name: "TAS", color: "#06b6d4" },
-  { key: "VIC", name: "VIC", color: "#8b5cf6" },
-  { key: "WA",  name: "WA",  color: "#ef4444" },
-  { key: "ACT", name: "ACT", color: "#22c55e" }
+  { key: "NSW", name: "NSW", color: "#648FFF" },
+  { key: "NT",  name: "NT",  color: "#785EF0" },
+  { key: "QLD", name: "QLD", color: "#DC267F" },
+  { key: "SA",  name: "SA",  color: "#FE6100" },
+  { key: "TAS", name: "TAS", color: "#FFCF00" },
+  { key: "VIC", name: "VIC", color: "#004D40" },
+  { key: "WA",  name: "WA",  color: "#C72E0F" },
+  { key: "ACT", name: "ACT", color: "#CEAC9D" }
 ];
 
 const chart2Fmt = d3.format(",.0f"); // for tooltip numbers
